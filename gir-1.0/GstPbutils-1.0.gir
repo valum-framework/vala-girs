@@ -1440,6 +1440,15 @@ The name of the target will usually be the constructor and model of the device,
 and that target will contain #GstEncodingProfiles suitable for that device.</doc>
       <type name="utf8" c:type="gchar*"/>
     </constant>
+    <constant name="ENCODING_CATEGORY_FILE_EXTENSION"
+              value="file-extension"
+              c:type="GST_ENCODING_CATEGORY_FILE_EXTENSION">
+      <doc xml:space="preserve">#GstEncodingTarget category for file extensions.
+The name of the target will be the name of the file extensions possible
+for a particular target. Those targets are defining like 'default' formats
+usually used for a particular file extension.</doc>
+      <type name="utf8" c:type="gchar*"/>
+    </constant>
     <constant name="ENCODING_CATEGORY_ONLINE_SERVICE"
               value="online-service"
               c:type="GST_ENCODING_CATEGORY_ONLINE_SERVICE">
@@ -1670,6 +1679,21 @@ subtitles), are currently ignored.</doc>
           </parameter>
         </parameters>
       </function>
+      <method name="copy" c:identifier="gst_encoding_profile_copy">
+        <doc xml:space="preserve">Makes a deep copy of @self</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:space="preserve">The copy of @self
+
+Since 1.12</doc>
+          <type name="EncodingProfile" c:type="GstEncodingProfile*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <doc xml:space="preserve">The #GstEncodingProfile to copy</doc>
+            <type name="EncodingProfile" c:type="GstEncodingProfile*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
       <method name="get_allow_dynamic_output"
               c:identifier="gst_encoding_profile_get_allow_dynamic_output">
         <doc xml:space="preserve">Get whether the format that has been negotiated in at some point can be renegotiated
@@ -1965,7 +1989,10 @@ This is the name that has been set when saving the preset.</doc>
             <doc xml:space="preserve">a #GstEncodingProfile</doc>
             <type name="EncodingProfile" c:type="GstEncodingProfile*"/>
           </instance-parameter>
-          <parameter name="preset" transfer-ownership="none">
+          <parameter name="preset"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">the element preset to use</doc>
             <type name="utf8" c:type="const gchar*"/>
           </parameter>
@@ -2078,7 +2105,9 @@ searched for.</doc>
         </return-value>
         <parameters>
           <parameter name="name" transfer-ownership="none">
-            <doc xml:space="preserve">the name of the #GstEncodingTarget to load.</doc>
+            <doc xml:space="preserve">the name of the #GstEncodingTarget to load (automatically
+converted to lower case internally as capital letters are not
+valid for target names).</doc>
             <type name="utf8" c:type="const gchar*"/>
           </parameter>
           <parameter name="category"
@@ -2378,6 +2407,18 @@ gst_install_plugins_context_free() when no longer needed</doc>
                 c:type="GstInstallPluginsContext*"/>
         </return-value>
       </constructor>
+      <method name="copy" c:identifier="gst_install_plugins_context_copy">
+        <return-value transfer-ownership="full">
+          <type name="InstallPluginsContext"
+                c:type="GstInstallPluginsContext*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="ctx" transfer-ownership="none">
+            <type name="InstallPluginsContext"
+                  c:type="GstInstallPluginsContext*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
       <method name="free" c:identifier="gst_install_plugins_context_free">
         <doc xml:space="preserve">Frees a #GstInstallPluginsContext.</doc>
         <return-value transfer-ownership="none">
@@ -2456,11 +2497,11 @@ If set, the ID will be passed to the installer via a
 
 GTK+/GNOME applications should be able to create a startup notification ID
 like this:
-&lt;programlisting&gt;
+|[
   timestamp = gtk_get_current_event_time ();
   startup_id = g_strdup_printf ("_TIME%u", timestamp);
 ...
-&lt;/programlisting&gt;</doc>
+]|</doc>
         <return-value transfer-ownership="none">
           <type name="none" c:type="void"/>
         </return-value>
@@ -2489,7 +2530,7 @@ command line option.
 
 Gtk+/Gnome application should be able to obtain the XID of the top-level
 window like this:
-&lt;programlisting&gt;
+|[
 ##include &amp;lt;gtk/gtk.h&amp;gt;
 ##ifdef GDK_WINDOWING_X11
 ##include &amp;lt;gdk/gdkx.h&amp;gt;
@@ -2499,7 +2540,7 @@ window like this:
   xid = GDK_WINDOW_XWINDOW (GTK_WIDGET (application_window)-&amp;gt;window);
 ##endif
 ...
-&lt;/programlisting&gt;</doc>
+]|</doc>
         <return-value transfer-ownership="none">
           <type name="none" c:type="void"/>
         </return-value>
@@ -2660,7 +2701,7 @@ in debugging.</doc>
       <type name="gint" c:type="gint"/>
     </constant>
     <constant name="PLUGINS_BASE_VERSION_MINOR"
-              value="11"
+              value="13"
               c:type="GST_PLUGINS_BASE_VERSION_MINOR">
       <doc xml:space="preserve">The minor version of GStreamer's gst-plugins-base libraries at compile time.</doc>
       <type name="gint" c:type="gint"/>
@@ -2744,23 +2785,13 @@ Main, LTP, SSR and others, the Main profile is used.
 The @audio_config parameter follows the following format, starting from the
 most significant bit of the first byte:
 
-&lt;itemizedlist&gt;
-  &lt;listitem&gt;&lt;para&gt;
-    Bit 0:4 contains the AudioObjectType
-  &lt;/para&gt;&lt;/listitem&gt;
-  &lt;listitem&gt;&lt;para&gt;
-    Bit 5:8 contains the sample frequency index (if this is 0xf, then the
-            next 24 bits define the actual sample frequency, and subsequent
-            fields are appropriately shifted).
-   &lt;/para&gt;&lt;/listitem&gt;
-  &lt;listitem&gt;&lt;para&gt;
-    Bit 9:12 contains the channel configuration
-  &lt;/para&gt;&lt;/listitem&gt;
-&lt;/itemizedlist&gt;
+  * Bit 0:4 contains the AudioObjectType
+  * Bit 5:8 contains the sample frequency index (if this is 0xf, then the
+    next 24 bits define the actual sample frequency, and subsequent
+    fields are appropriately shifted).
+  * Bit 9:12 contains the channel configuration
 
-&lt;note&gt;
-HE-AAC support has not yet been implemented.
-&lt;/note&gt;</doc>
+&gt; HE-AAC support has not yet been implemented.</doc>
       <return-value transfer-ownership="none">
         <doc xml:space="preserve">The level as a const string and %NULL if the level could not be
 determined.</doc>
@@ -2784,9 +2815,7 @@ determined.</doc>
 determined using the AudioObjectType field which is in the first 5 bits of
 @audio_config.
 
-&lt;note&gt;
-HE-AAC support has not yet been implemented.
-&lt;/note&gt;</doc>
+&gt; HE-AAC support has not yet been implemented.</doc>
       <return-value transfer-ownership="none">
         <doc xml:space="preserve">The profile as a const string and %NULL if the profile could not be
 determined.</doc>
@@ -2909,16 +2938,14 @@ following format, as defined in the H.264 specification. The SPS is viewed
 as a bitstream here, with bit 0 being the most significant bit of the first
 byte.
 
-&lt;itemizedlist&gt;
-&lt;listitem&gt;&lt;para&gt;Bit 0:7   - Profile indication&lt;/para&gt;&lt;/listitem&gt;
-&lt;listitem&gt;&lt;para&gt;Bit 8     - constraint_set0_flag&lt;/para&gt;&lt;/listitem&gt;
-&lt;listitem&gt;&lt;para&gt;Bit 9     - constraint_set1_flag&lt;/para&gt;&lt;/listitem&gt;
-&lt;listitem&gt;&lt;para&gt;Bit 10    - constraint_set2_flag&lt;/para&gt;&lt;/listitem&gt;
-&lt;listitem&gt;&lt;para&gt;Bit 11    - constraint_set3_flag&lt;/para&gt;&lt;/listitem&gt;
-&lt;listitem&gt;&lt;para&gt;Bit 12    - constraint_set3_flag&lt;/para&gt;&lt;/listitem&gt;
-&lt;listitem&gt;&lt;para&gt;Bit 13:15 - Reserved&lt;/para&gt;&lt;/listitem&gt;
-&lt;listitem&gt;&lt;para&gt;Bit 16:24 - Level indication&lt;/para&gt;&lt;/listitem&gt;
-&lt;/itemizedlist&gt;</doc>
+* Bit 0:7   - Profile indication
+* Bit 8     - constraint_set0_flag
+* Bit 9     - constraint_set1_flag
+* Bit 10    - constraint_set2_flag
+* Bit 11    - constraint_set3_flag
+* Bit 12    - constraint_set3_flag
+* Bit 13:15 - Reserved
+* Bit 16:24 - Level indication</doc>
       <return-value transfer-ownership="none">
         <doc xml:space="preserve">The profile as a const string, or %NULL if there is an error.</doc>
         <type name="utf8" c:type="const gchar*"/>
@@ -3008,18 +3035,16 @@ expected to have the following format, as defined in the H.265
 specification. The profile_tier_level is viewed as a bitstream here,
 with bit 0 being the most significant bit of the first byte.
 
-&lt;itemizedlist&gt;
-&lt;listitem&gt;&lt;para&gt;Bit 0:1   - general_profile_space&lt;/para&gt;&lt;/listitem&gt;
-&lt;listitem&gt;&lt;para&gt;Bit 2     - general_tier_flag&lt;/para&gt;&lt;/listitem&gt;
-&lt;listitem&gt;&lt;para&gt;Bit 3:7   - general_profile_idc&lt;/para&gt;&lt;/listitem&gt;
-&lt;listitem&gt;&lt;para&gt;Bit 8:39  - gernal_profile_compatibility_flags&lt;/para&gt;&lt;/listitem&gt;
-&lt;listitem&gt;&lt;para&gt;Bit 40    - general_progressive_source_flag&lt;/para&gt;&lt;/listitem&gt;
-&lt;listitem&gt;&lt;para&gt;Bit 41    - general_interlaced_source_flag&lt;/para&gt;&lt;/listitem&gt;
-&lt;listitem&gt;&lt;para&gt;Bit 42    - general_non_packed_constraint_flag&lt;/para&gt;&lt;/listitem&gt;
-&lt;listitem&gt;&lt;para&gt;Bit 43    - general_frame_only_constraint_flag&lt;/para&gt;&lt;/listitem&gt;
-&lt;listitem&gt;&lt;para&gt;Bit 44:87 - general_reserved_zero_44bits&lt;/para&gt;&lt;/listitem&gt;
-&lt;listitem&gt;&lt;para&gt;Bit 88:95 - general_level_idc&lt;/para&gt;&lt;/listitem&gt;
-&lt;/itemizedlist&gt;</doc>
+* Bit 0:1   - general_profile_space
+* Bit 2     - general_tier_flag
+* Bit 3:7   - general_profile_idc
+* Bit 8:39  - gernal_profile_compatibility_flags
+* Bit 40    - general_progressive_source_flag
+* Bit 41    - general_interlaced_source_flag
+* Bit 42    - general_non_packed_constraint_flag
+* Bit 43    - general_frame_only_constraint_flag
+* Bit 44:87 - general_reserved_zero_44bits
+* Bit 88:95 - general_level_idc</doc>
       <return-value transfer-ownership="none">
         <doc xml:space="preserve">The profile as a const string, or %NULL if there is an error.
 

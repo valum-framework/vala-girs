@@ -6,6 +6,7 @@ and/or use gtk-doc annotations.  -->
             xmlns="http://www.gtk.org/introspection/core/1.0"
             xmlns:c="http://www.gtk.org/introspection/c/1.0"
             xmlns:glib="http://www.gtk.org/introspection/glib/1.0">
+  <include name="Camel" version="1.2"/>
   <include name="EDataServer" version="1.2"/>
   <include name="GLib" version="2.0"/>
   <include name="GObject" version="2.0"/>
@@ -3656,10 +3657,10 @@ are currently supported as summary fields.&lt;/para&gt;&lt;/note&gt;</doc>
                 transfer-ownership="none">
         <type name="utf8" c:type="gchar*"/>
       </property>
-      <field name="parent">
+      <field name="parent" readable="0" private="1">
         <type name="EDataServer.SourceBackend" c:type="ESourceBackend"/>
       </field>
-      <field name="priv">
+      <field name="priv" readable="0" private="1">
         <type name="SourceBackendSummarySetupPrivate"
               c:type="ESourceBackendSummarySetupPrivate*"/>
       </field>
@@ -4112,6 +4113,52 @@ by the @format argument.</doc>
           <parameter name="format" transfer-ownership="none">
             <doc xml:space="preserve">the format to export to</doc>
             <type name="VCardFormat" c:type="EVCardFormat"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="util_dup_x_attribute"
+              c:identifier="e_vcard_util_dup_x_attribute"
+              version="3.26">
+        <return-value transfer-ownership="full" nullable="1">
+          <doc xml:space="preserve">Value of attribute @x_name, or %NULL,
+   when there is no such attribute. Free the returned pointer with g_free(),
+   when no longer needed.</doc>
+          <type name="utf8" c:type="gchar*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="vcard" transfer-ownership="none">
+            <doc xml:space="preserve">an #EVCard</doc>
+            <type name="VCard" c:type="EVCard*"/>
+          </instance-parameter>
+          <parameter name="x_name" transfer-ownership="none">
+            <doc xml:space="preserve">the attribute name, which starts with "X-"</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="util_set_x_attribute"
+              c:identifier="e_vcard_util_set_x_attribute"
+              version="3.26">
+        <doc xml:space="preserve">Sets an "X-" attribute @x_name to value @value in @vcard, or
+removes it from @vcard, when @value is %NULL.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="vcard" transfer-ownership="none">
+            <doc xml:space="preserve">an #EVCard</doc>
+            <type name="VCard" c:type="EVCard*"/>
+          </instance-parameter>
+          <parameter name="x_name" transfer-ownership="none">
+            <doc xml:space="preserve">the attribute name, which starts with "X-"</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+          <parameter name="value"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <doc xml:space="preserve">the value to set, or %NULL to unset</doc>
+            <type name="utf8" c:type="const gchar*"/>
           </parameter>
         </parameters>
       </method>

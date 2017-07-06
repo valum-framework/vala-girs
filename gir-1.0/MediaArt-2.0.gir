@@ -68,7 +68,7 @@ usually an initiation error.</doc>
         <doc xml:space="preserve">Initialize a GObject for processing and extracting media art.
 
 This function initializes cache hash tables, backend plugins,
-storage modules used for removable devices and a connection to D-Bus.</doc>
+and storage modules used for removable devices.</doc>
         <return-value transfer-ownership="full">
           <doc xml:space="preserve">A new #MediaArtProcess object on success or %NULL if
 @error is set. This object must be freed using g_object_unref().</doc>
@@ -673,7 +673,9 @@ returned if @error is set.</doc>
       <parameters>
         <parameter name="buffer" transfer-ownership="none">
           <doc xml:space="preserve">Raw buffer representing content to save</doc>
-          <type name="guint8" c:type="const unsigned char*"/>
+          <array length="1" zero-terminated="0" c:type="unsigned char*">
+            <type name="guint8" c:type="unsigned char"/>
+          </array>
         </parameter>
         <parameter name="len" transfer-ownership="none">
           <doc xml:space="preserve">Length of @buffer to use</doc>

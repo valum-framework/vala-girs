@@ -22,6 +22,23 @@ and/or use gtk-doc annotations.  -->
            glib:type-name="PnlAnimation"
            glib:get-type="pnl_animation_get_type"
            glib:type-struct="AnimationClass">
+      <function name="calculate_duration"
+                c:identifier="pnl_animation_calculate_duration">
+        <return-value transfer-ownership="none">
+          <type name="guint" c:type="guint"/>
+        </return-value>
+        <parameters>
+          <parameter name="monitor" transfer-ownership="none">
+            <type name="Gdk.Monitor" c:type="GdkMonitor*"/>
+          </parameter>
+          <parameter name="from_value" transfer-ownership="none">
+            <type name="gdouble" c:type="gdouble"/>
+          </parameter>
+          <parameter name="to_value" transfer-ownership="none">
+            <type name="gdouble" c:type="gdouble"/>
+          </parameter>
+        </parameters>
+      </function>
       <method name="add_property" c:identifier="pnl_animation_add_property">
         <doc xml:space="preserve">Adds a new property to the set of properties to be animated during the
 lifetime of the animation.
@@ -106,7 +123,7 @@ offset in the animations duration.</doc>
                 writable="1"
                 construct-only="1"
                 transfer-ownership="none">
-        <doc xml:space="preserve">The "target" property is the #GObject that should have it's properties
+        <doc xml:space="preserve">The "target" property is the #GObject that should have its properties
 animated.</doc>
         <type name="GObject.Object"/>
       </property>
@@ -1052,6 +1069,39 @@ dock item is visible to the user.</doc>
           </instance-parameter>
         </parameters>
       </virtual-method>
+      <method name="get_edge" c:identifier="pnl_dock_overlay_get_edge">
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">The corresponding #PnlDockOverlayEdge.</doc>
+          <type name="DockOverlayEdge" c:type="PnlDockOverlayEdge*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <doc xml:space="preserve">An #PnlDockOverlay.</doc>
+            <type name="DockOverlay" c:type="PnlDockOverlay*"/>
+          </instance-parameter>
+          <parameter name="position" transfer-ownership="none">
+            <doc xml:space="preserve">the edge position.</doc>
+            <type name="Gtk.PositionType" c:type="GtkPositionType"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="get_edge_adjustment"
+              c:identifier="pnl_dock_overlay_get_edge_adjustment">
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">The corresponding #GtkAdjustment.</doc>
+          <type name="Gtk.Adjustment" c:type="GtkAdjustment*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <doc xml:space="preserve">An #PnlDockOverlay.</doc>
+            <type name="DockOverlay" c:type="PnlDockOverlay*"/>
+          </instance-parameter>
+          <parameter name="position" transfer-ownership="none">
+            <doc xml:space="preserve">the edge position.</doc>
+            <type name="Gtk.PositionType" c:type="GtkPositionType"/>
+          </parameter>
+        </parameters>
+      </method>
       <field name="parent_instance">
         <type name="Gtk.EventBox" c:type="GtkEventBox"/>
       </field>
@@ -1312,6 +1362,13 @@ dock item is visible to the user.</doc>
            glib:type-name="PnlDockRevealer"
            glib:get-type="pnl_dock_revealer_get_type"
            glib:type-struct="DockRevealerClass">
+      <doc xml:space="preserve">This widget is a bit like #GtkRevealer with a couple of important
+differences. First, it only supports a couple transition types
+(the direction to slide reveal). Additionally, the size of the
+child allocation will not change during the animation. This is not
+as generally useful as an upstream GTK+ widget, but is extremely
+important for the panel case to avoid things looking strange while
+animating into and out of view.</doc>
       <implements name="Atk.ImplementorIface"/>
       <implements name="Gtk.Buildable"/>
       <constructor name="new" c:identifier="pnl_dock_revealer_new">
@@ -1319,6 +1376,23 @@ dock item is visible to the user.</doc>
           <type name="Gtk.Widget" c:type="GtkWidget*"/>
         </return-value>
       </constructor>
+      <method name="animate_to_position"
+              c:identifier="pnl_dock_revealer_animate_to_position">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="DockRevealer" c:type="PnlDockRevealer*"/>
+          </instance-parameter>
+          <parameter name="position" transfer-ownership="none">
+            <type name="gint" c:type="gint"/>
+          </parameter>
+          <parameter name="transition_duration" transfer-ownership="none">
+            <type name="guint" c:type="guint"/>
+          </parameter>
+        </parameters>
+      </method>
       <method name="get_child_revealed"
               c:identifier="pnl_dock_revealer_get_child_revealed">
         <return-value transfer-ownership="none">
@@ -1928,11 +2002,11 @@ dock item is visible to the user.</doc>
       <doc xml:space="preserve">pnl major version component (e.g. 1 if %PNL_VERSION is 1.2.3)</doc>
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="MICRO_VERSION" value="2" c:type="PNL_MICRO_VERSION">
+    <constant name="MICRO_VERSION" value="1" c:type="PNL_MICRO_VERSION">
       <doc xml:space="preserve">pnl micro version component (e.g. 3 if %PNL_VERSION is 1.2.3)</doc>
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="MINOR_VERSION" value="22" c:type="PNL_MINOR_VERSION">
+    <constant name="MINOR_VERSION" value="25" c:type="PNL_MINOR_VERSION">
       <doc xml:space="preserve">pnl minor version component (e.g. 2 if %PNL_VERSION is 1.2.3)</doc>
       <type name="gint" c:type="gint"/>
     </constant>
@@ -1943,6 +2017,9 @@ dock item is visible to the user.</doc>
            glib:type-name="PnlMultiPaned"
            glib:get-type="pnl_multi_paned_get_type"
            glib:type-struct="MultiPanedClass">
+      <doc xml:space="preserve">This widget is similar to #GtkPaned except that it allows adding more than
+two children to the widget. For each additional child added to the
+#PnlMultiPaned, an additional resize grip is added.</doc>
       <implements name="Atk.ImplementorIface"/>
       <implements name="Gtk.Buildable"/>
       <implements name="Gtk.Orientable"/>
@@ -2313,7 +2390,7 @@ dock item is visible to the user.</doc>
         <type name="Gtk.BoxClass" c:type="GtkBoxClass"/>
       </field>
     </record>
-    <constant name="VERSION_S" value="3.22.2" c:type="PNL_VERSION_S">
+    <constant name="VERSION_S" value="3.25.1" c:type="PNL_VERSION_S">
       <doc xml:space="preserve">pnl version, encoded as a string, useful for printing and
 concatenation.</doc>
       <type name="utf8" c:type="gchar*"/>
@@ -2486,6 +2563,22 @@ Side effects: None.</doc>
         <parameter name="args" transfer-ownership="none">
           <doc xml:space="preserve">A variadac list of arguments</doc>
           <type name="va_list" c:type="va_list"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="overlay_add_child" c:identifier="pnl_overlay_add_child">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="self" transfer-ownership="none">
+          <type name="DockOverlay" c:type="PnlDockOverlay*"/>
+        </parameter>
+        <parameter name="child" transfer-ownership="none">
+          <type name="Gtk.Widget" c:type="GtkWidget*"/>
+        </parameter>
+        <parameter name="type" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
         </parameter>
       </parameters>
     </function>

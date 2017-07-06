@@ -28,7 +28,7 @@ and/or use gtk-doc annotations.  -->
       <type name="guint" c:type="guint"/>
     </alias>
     <alias name="KeystrokeListener" c:type="AtspiKeystrokeListener">
-      <type name="gpointer" c:type="gpointer"/>
+      <type name="none" c:type="void"/>
     </alias>
     <class name="Accessible"
            c:symbol-prefix="accessible"
@@ -3877,12 +3877,12 @@ to the appropriate META value, for the convenience of the client.</doc>
       </method>
     </record>
     <constant name="RELATIONTYPE_COUNT"
-              value="20"
+              value="24"
               c:type="ATSPI_RELATIONTYPE_COUNT">
       <doc xml:space="preserve">One higher than the highest valid value of #AtspiRelationType.</doc>
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="ROLE_COUNT" value="122" c:type="ATSPI_ROLE_COUNT">
+    <constant name="ROLE_COUNT" value="126" c:type="ATSPI_ROLE_COUNT">
       <doc xml:space="preserve">One higher than the highest valid value of #AtspiRole.</doc>
       <type name="gint" c:type="gint"/>
     </constant>
@@ -4179,20 +4179,69 @@ of assistive technology clients, even though the previous toplevel
               value="17"
               c:identifier="ATSPI_RELATION_DESCRIPTION_FOR"
               glib:nick="description-for">
-        <doc xml:space="preserve">Indicates that an object provides
-descriptive information about another object; more verbose than
-@ATSPI_RELATION_LABEL_FOR.</doc>
+        <doc xml:space="preserve">Reciprocal of %ATSPI_RELATION_DESCRIBED_BY.
+Indicates that this object provides descriptive information about the target
+object(s). See also %ATSPI_RELATION_DETAILS_FOR and %ATSPI_RELATION_ERROR_FOR.</doc>
       </member>
       <member name="described_by"
               value="18"
               c:identifier="ATSPI_RELATION_DESCRIBED_BY"
               glib:nick="described-by">
-        <doc xml:space="preserve">Indicates that another object provides
-descriptive information about this object; more verbose than
-@ATSPI_RELATION_LABELLED_BY.</doc>
+        <doc xml:space="preserve">Reciprocal of %ATSPI_RELATION_DESCRIPTION_FOR.
+Indicates that one or more target objects provide descriptive information
+about this object. This relation type is most appropriate for information
+that is not essential as its presentation may be user-configurable and/or
+limited to an on-demand mechanism such as an assistive technology command.
+For brief, essential information such as can be found in a widget's on-screen
+label, use %ATSPI_RELATION_LABELLED_BY. For an on-screen error message, use
+%ATSPI_RELATION_ERROR_MESSAGE. For lengthy extended descriptive information
+contained in an on-screen object, consider using %ATSPI_RELATION_DETAILS as
+assistive technologies may provide a means for the user to navigate to
+objects containing detailed descriptions so that their content can be more
+closely reviewed.</doc>
+      </member>
+      <member name="details"
+              value="19"
+              c:identifier="ATSPI_RELATION_DETAILS"
+              glib:nick="details">
+        <doc xml:space="preserve">Reciprocal of %ATSPI_RELATION_DETAILS_FOR. Indicates
+that this object has a detailed or extended description, the contents of
+which can be found in the target object(s). This relation type is most
+appropriate for information that is sufficiently lengthy as to make
+navigation to the container of that information desirable. For less verbose
+information suitable for announcement only, see %ATSPI_RELATION_DESCRIBED_BY.
+If the detailed information describes an error condition,
+%ATSPI_RELATION_ERROR_FOR should be used instead. @Since: 2.26.</doc>
+      </member>
+      <member name="details_for"
+              value="20"
+              c:identifier="ATSPI_RELATION_DETAILS_FOR"
+              glib:nick="details-for">
+        <doc xml:space="preserve">Reciprocal of %ATSPI_RELATION_DETAILS. Indicates
+that this object provides a detailed or extended description about the target
+object(s). See also %ATSPI_RELATION_DESCRIPTION_FOR and
+%ATSPI_RELATION_ERROR_FOR. @Since: 2.26.</doc>
+      </member>
+      <member name="error_message"
+              value="21"
+              c:identifier="ATSPI_RELATION_ERROR_MESSAGE"
+              glib:nick="error-message">
+        <doc xml:space="preserve">Reciprocal of %ATSPI_RELATION_ERROR_FOR.
+Indicates that this object has one or more errors, the nature of which is
+described in the contents of the target object(s). Objects that have this
+relation type should also contain %ATSPI_STATE_INVALID_ENTRY in their
+#AtspiStateSet. @Since: 2.26.</doc>
+      </member>
+      <member name="error_for"
+              value="22"
+              c:identifier="ATSPI_RELATION_ERROR_FOR"
+              glib:nick="error-for">
+        <doc xml:space="preserve">Reciprocal of %ATSPI_RELATION_ERROR_MESSAGE.
+Indicates that this object contains an error message describing an invalid
+condition in the target object(s). @Since: 2.26.</doc>
       </member>
       <member name="last_defined"
-              value="19"
+              value="23"
               c:identifier="ATSPI_RELATION_LAST_DEFINED"
               glib:nick="last-defined">
         <doc xml:space="preserve">Do not use as a parameter value, used to
@@ -4704,7 +4753,7 @@ onscreen viewport.</doc>
               c:identifier="ATSPI_ROLE_EXTENDED"
               glib:nick="extended">
         <doc xml:space="preserve">means that the role for this item is known, but not
-included in the core enumeration.</doc>
+included in the core enumeration. Deprecated since 2.24.</doc>
       </member>
       <member name="header"
               value="71"
@@ -5118,8 +5167,41 @@ subscript. @Since: 2.16.</doc>
         <doc xml:space="preserve">An object that contains text that is displayed as a
 superscript. @Since: 2.16.</doc>
       </member>
-      <member name="last_defined"
+      <member name="description_list"
               value="121"
+              c:identifier="ATSPI_ROLE_DESCRIPTION_LIST"
+              glib:nick="description-list">
+        <doc xml:space="preserve">An object that represents a list of term-value
+groups. A term-value group represents an individual description and consist
+of one or more names (@ATSPI_ROLE_DESCRIPTION_TERM) followed by one or more
+values (@ATSPI_ROLE_DESCRIPTION_VALUE). For each list, there should not be
+more than one group with the same term name. @Since: 2.26.</doc>
+      </member>
+      <member name="description_term"
+              value="122"
+              c:identifier="ATSPI_ROLE_DESCRIPTION_TERM"
+              glib:nick="description-term">
+        <doc xml:space="preserve">An object that represents the term, or name,
+part of a term-description group in a description list. @Since: 2.26.</doc>
+      </member>
+      <member name="description_value"
+              value="123"
+              c:identifier="ATSPI_ROLE_DESCRIPTION_VALUE"
+              glib:nick="description-value">
+        <doc xml:space="preserve">An object that represents the description,
+definition, or value of a term-description group in a description list.
+The values within a group are alternatives, meaning that you can have
+several @ATSPI_ROLE_DESCRIPTION_VALUE objects for a given
+@ATSPI_ROLE_DESCRIPTION_TERM. @Since: 2.26.</doc>
+      </member>
+      <member name="footnote"
+              value="124"
+              c:identifier="ATSPI_ROLE_FOOTNOTE"
+              glib:nick="footnote">
+        <doc xml:space="preserve">An object that contains the text of a footnote. @Since: 2.26.</doc>
+      </member>
+      <member name="last_defined"
+              value="125"
               c:identifier="ATSPI_ROLE_LAST_DEFINED"
               glib:nick="last-defined">
         <doc xml:space="preserve">Not a valid role, used for finding end of
@@ -6545,14 +6627,11 @@ AtspiAccessibles representing the column header cells.</doc>
       <method name="get_column_index"
               c:identifier="atspi_table_cell_get_column_index"
               throws="1">
-        <doc xml:space="preserve">Translates this cell accessible into the corresponding column index.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:space="preserve">the column index for this cell, or -1 if unimplemented.</doc>
           <type name="gint" c:type="gint"/>
         </return-value>
         <parameters>
           <instance-parameter name="obj" transfer-ownership="none">
-            <doc xml:space="preserve">a GObject instance that implements AtspiTableCellIface</doc>
             <type name="TableCell" c:type="AtspiTableCell*"/>
           </instance-parameter>
         </parameters>
@@ -6571,6 +6650,35 @@ or 0 if the cell does not implement this method.</doc>
             <doc xml:space="preserve">a GObject instance that implements AtspiTableCellIface</doc>
             <type name="TableCell" c:type="AtspiTableCell*"/>
           </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_position"
+              c:identifier="atspi_table_cell_get_position"
+              throws="1">
+        <doc xml:space="preserve">Retrieves the tabular position of this cell.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">TRUE if successful, FALSE otherwise.</doc>
+          <type name="gint" c:type="gint"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="obj" transfer-ownership="none">
+            <doc xml:space="preserve">a GObject instance that implements AtspiTableCellIface</doc>
+            <type name="TableCell" c:type="AtspiTableCell*"/>
+          </instance-parameter>
+          <parameter name="row"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="full">
+            <doc xml:space="preserve">the row of the given cell.</doc>
+            <type name="gint" c:type="gint*"/>
+          </parameter>
+          <parameter name="column"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="full">
+            <doc xml:space="preserve">the column of the given cell.</doc>
+            <type name="gint" c:type="gint*"/>
+          </parameter>
         </parameters>
       </method>
       <method name="get_row_column_span"
@@ -6629,18 +6737,6 @@ AtspiAccessibles representing the row header cells.</doc>
         <parameters>
           <instance-parameter name="obj" transfer-ownership="none">
             <doc xml:space="preserve">a GObject instance that implements AtspiTableCellIface</doc>
-            <type name="TableCell" c:type="AtspiTableCell*"/>
-          </instance-parameter>
-        </parameters>
-      </method>
-      <method name="get_row_index"
-              c:identifier="atspi_table_cell_get_row_index"
-              throws="1">
-        <return-value transfer-ownership="none">
-          <type name="gint" c:type="gint"/>
-        </return-value>
-        <parameters>
-          <instance-parameter name="obj" transfer-ownership="none">
             <type name="TableCell" c:type="AtspiTableCell*"/>
           </instance-parameter>
         </parameters>

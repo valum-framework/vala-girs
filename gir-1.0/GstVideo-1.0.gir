@@ -74,14 +74,11 @@ on buffers from the pool.</doc>
                glib:type-name="GstColorBalance"
                glib:get-type="gst_color_balance_get_type"
                glib:type-struct="ColorBalanceInterface">
-      <doc xml:space="preserve">&lt;refsect2&gt;&lt;para&gt;
-This interface is implemented by elements which can perform some color
+      <doc xml:space="preserve">This interface is implemented by elements which can perform some color
 balance operation on video frames they process. For example, modifying
 the brightness, contrast, hue or saturation.
-&lt;/para&gt;&lt;para&gt;
-Example elements are 'xvimagesink' and 'colorbalance'
-&lt;/para&gt;
-&lt;/refsect2&gt;</doc>
+
+Example elements are 'xvimagesink' and 'colorbalance'</doc>
       <virtual-method name="get_balance_type" invoker="get_balance_type">
         <doc xml:space="preserve">Get the #GstColorBalanceType of this implementation.</doc>
         <return-value transfer-ownership="none">
@@ -311,10 +308,9 @@ channel object.</doc>
            glib:type-name="GstColorBalanceChannel"
            glib:get-type="gst_color_balance_channel_get_type"
            glib:type-struct="ColorBalanceChannelClass">
-      <doc xml:space="preserve">&lt;refsect2&gt;&lt;para&gt;The #GstColorBalanceChannel object represents a parameter
+      <doc xml:space="preserve">The #GstColorBalanceChannel object represents a parameter
 for modifying the color balance implemented by an element providing the
-#GstColorBalance interface. For example, Hue or Saturation.
-&lt;/para&gt;&lt;/refsect2&gt;</doc>
+#GstColorBalance interface. For example, Hue or Saturation.</doc>
       <virtual-method name="value_changed">
         <return-value transfer-ownership="none">
           <type name="none" c:type="void"/>
@@ -564,32 +560,20 @@ library also provides methods for parsing received events, and for sending and
 receiving navigation related bus events. One main usecase is DVD menu navigation.
 
 The main parts of the API are:
-&lt;itemizedlist&gt;
-&lt;listitem&gt;
-&lt;para&gt;
-The GstNavigation interface, implemented by elements which provide an application
-with the ability to create and inject navigation events into the pipeline.
-&lt;/para&gt;
-&lt;/listitem&gt;
-&lt;listitem&gt;
-&lt;para&gt;
-GstNavigation event handling API. GstNavigation events are created in response to
-calls on a GstNavigation interface implementation, and sent in the pipeline. Upstream
-elements can use the navigation event API functions to parse the contents of received
-messages.
-&lt;/para&gt;
-&lt;/listitem&gt;
-&lt;listitem&gt;
-&lt;para&gt;
-GstNavigation message handling API. GstNavigation messages may be sent on the message
-bus to inform applications of navigation related changes in the pipeline, such as the
-mouse moving over a clickable region, or the set of available angles changing.
-&lt;/para&gt;&lt;para&gt;
+
+* The GstNavigation interface, implemented by elements which provide an application
+  with the ability to create and inject navigation events into the pipeline.
+* GstNavigation event handling API. GstNavigation events are created in response to
+  calls on a GstNavigation interface implementation, and sent in the pipeline. Upstream
+  elements can use the navigation event API functions to parse the contents of received
+  messages.
+
+* GstNavigation message handling API. GstNavigation messages may be sent on the message
+  bus to inform applications of navigation related changes in the pipeline, such as the
+  mouse moving over a clickable region, or the set of available angles changing.
+
 The GstNavigation message functions provide functions for creating and parsing
-custom bus messages for signaling GstNavigation changes.
-&lt;/para&gt;
-&lt;/listitem&gt;
-&lt;/itemizedlist&gt;</doc>
+custom bus messages for signaling GstNavigation changes.</doc>
       <function name="event_get_type"
                 c:identifier="gst_navigation_event_get_type">
         <doc xml:space="preserve">Inspect a #GstEvent and return the #GstNavigationEventType of the event, or
@@ -617,9 +601,14 @@ associated command.</doc>
             <doc xml:space="preserve">A #GstEvent to inspect.</doc>
             <type name="Gst.Event" c:type="GstEvent*"/>
           </parameter>
-          <parameter name="command" transfer-ownership="none">
-            <doc xml:space="preserve">Pointer to GstNavigationCommand to receive the type of the
-navigation event.</doc>
+          <parameter name="command"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="full"
+                     optional="1"
+                     allow-none="1">
+            <doc xml:space="preserve">Pointer to GstNavigationCommand to receive the
+    type of the navigation event.</doc>
             <type name="NavigationCommand" c:type="GstNavigationCommand*"/>
           </parameter>
         </parameters>
@@ -634,10 +623,15 @@ navigation event.</doc>
             <doc xml:space="preserve">A #GstEvent to inspect.</doc>
             <type name="Gst.Event" c:type="GstEvent*"/>
           </parameter>
-          <parameter name="key" transfer-ownership="none">
-            <doc xml:space="preserve">A pointer to a location to receive the string identifying the key
-press. The returned string is owned by the event, and valid only until the
-event is unreffed.</doc>
+          <parameter name="key"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="none"
+                     optional="1"
+                     allow-none="1">
+            <doc xml:space="preserve">A pointer to a location to receive
+    the string identifying the key press. The returned string is owned by the
+    event, and valid only until the event is unreffed.</doc>
             <type name="utf8" c:type="const gchar**"/>
           </parameter>
         </parameters>
@@ -657,19 +651,34 @@ gst_navigation_event_get_type() to retrieve the #GstNavigationEventType.</doc>
             <doc xml:space="preserve">A #GstEvent to inspect.</doc>
             <type name="Gst.Event" c:type="GstEvent*"/>
           </parameter>
-          <parameter name="button" transfer-ownership="none">
-            <doc xml:space="preserve">Pointer to a gint that will receive the button number associated
-with the event.</doc>
+          <parameter name="button"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="full"
+                     optional="1"
+                     allow-none="1">
+            <doc xml:space="preserve">Pointer to a gint that will receive the button
+    number associated with the event.</doc>
             <type name="gint" c:type="gint*"/>
           </parameter>
-          <parameter name="x" transfer-ownership="none">
-            <doc xml:space="preserve">Pointer to a gdouble to receive the x coordinate of the mouse button
-event.</doc>
+          <parameter name="x"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="full"
+                     optional="1"
+                     allow-none="1">
+            <doc xml:space="preserve">Pointer to a gdouble to receive the x coordinate of the
+    mouse button event.</doc>
             <type name="gdouble" c:type="gdouble*"/>
           </parameter>
-          <parameter name="y" transfer-ownership="none">
-            <doc xml:space="preserve">Pointer to a gdouble to receive the y coordinate of the mouse button
-event.</doc>
+          <parameter name="y"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="full"
+                     optional="1"
+                     allow-none="1">
+            <doc xml:space="preserve">Pointer to a gdouble to receive the y coordinate of the
+    mouse button event.</doc>
             <type name="gdouble" c:type="gdouble*"/>
           </parameter>
         </parameters>
@@ -687,12 +696,24 @@ of the event.</doc>
             <doc xml:space="preserve">A #GstEvent to inspect.</doc>
             <type name="Gst.Event" c:type="GstEvent*"/>
           </parameter>
-          <parameter name="x" transfer-ownership="none">
-            <doc xml:space="preserve">Pointer to a gdouble to receive the x coordinate of the mouse movement.</doc>
+          <parameter name="x"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="full"
+                     optional="1"
+                     allow-none="1">
+            <doc xml:space="preserve">Pointer to a gdouble to receive the x coordinate of the
+    mouse movement.</doc>
             <type name="gdouble" c:type="gdouble*"/>
           </parameter>
-          <parameter name="y" transfer-ownership="none">
-            <doc xml:space="preserve">Pointer to a gdouble to receive the y coordinate of the mouse movement.</doc>
+          <parameter name="y"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="full"
+                     optional="1"
+                     allow-none="1">
+            <doc xml:space="preserve">Pointer to a gdouble to receive the y coordinate of the
+    mouse movement.</doc>
             <type name="gdouble" c:type="gdouble*"/>
           </parameter>
         </parameters>
@@ -808,13 +829,24 @@ and extract the @cur_angle and @n_angles parameters.</doc>
             <doc xml:space="preserve">A #GstMessage to inspect.</doc>
             <type name="Gst.Message" c:type="GstMessage*"/>
           </parameter>
-          <parameter name="cur_angle" transfer-ownership="none">
-            <doc xml:space="preserve">A pointer to a #guint to receive the new current angle number,
-or NULL</doc>
+          <parameter name="cur_angle"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="full"
+                     optional="1"
+                     allow-none="1">
+            <doc xml:space="preserve">A pointer to a #guint to receive the new
+    current angle number, or NULL</doc>
             <type name="guint" c:type="guint*"/>
           </parameter>
-          <parameter name="n_angles" transfer-ownership="none">
-            <doc xml:space="preserve">A pointer to a #guint to receive the new angle count, or NULL.</doc>
+          <parameter name="n_angles"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="full"
+                     optional="1"
+                     allow-none="1">
+            <doc xml:space="preserve">A pointer to a #guint to receive the new angle
+    count, or NULL.</doc>
             <type name="guint" c:type="guint*"/>
           </parameter>
         </parameters>
@@ -837,9 +869,11 @@ with it.</doc>
           <parameter name="event"
                      direction="out"
                      caller-allocates="0"
-                     transfer-ownership="full">
-            <doc xml:space="preserve">a pointer to a #GstEvent to receive the
-    contained navigation event.</doc>
+                     transfer-ownership="full"
+                     optional="1"
+                     allow-none="1">
+            <doc xml:space="preserve">a pointer to a #GstEvent to receive
+    the contained navigation event.</doc>
             <type name="Gst.Event" c:type="GstEvent**"/>
           </parameter>
         </parameters>
@@ -858,9 +892,14 @@ active, it indicates that the mouse is over a clickable area.</doc>
             <doc xml:space="preserve">A #GstMessage to inspect.</doc>
             <type name="Gst.Message" c:type="GstMessage*"/>
           </parameter>
-          <parameter name="active" transfer-ownership="none">
-            <doc xml:space="preserve">A pointer to a gboolean to receive the active/inactive state,
-or NULL.</doc>
+          <parameter name="active"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="full"
+                     optional="1"
+                     allow-none="1">
+            <doc xml:space="preserve">A pointer to a gboolean to receive the
+    active/inactive state, or NULL.</doc>
             <type name="gboolean" c:type="gboolean*"/>
           </parameter>
         </parameters>
@@ -914,14 +953,24 @@ angles into the #guint pointed to by the @n_angles variable.</doc>
             <doc xml:space="preserve">a #GstQuery</doc>
             <type name="Gst.Query" c:type="GstQuery*"/>
           </parameter>
-          <parameter name="cur_angle" transfer-ownership="none">
-            <doc xml:space="preserve">Pointer to a #guint into which to store the currently selected
-angle value from the query, or NULL</doc>
+          <parameter name="cur_angle"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="full"
+                     optional="1"
+                     allow-none="1">
+            <doc xml:space="preserve">Pointer to a #guint into which to store the
+    currently selected angle value from the query, or NULL</doc>
             <type name="guint" c:type="guint*"/>
           </parameter>
-          <parameter name="n_angles" transfer-ownership="none">
-            <doc xml:space="preserve">Pointer to a #guint into which to store the number of angles
-value from the query, or NULL</doc>
+          <parameter name="n_angles"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="full"
+                     optional="1"
+                     allow-none="1">
+            <doc xml:space="preserve">Pointer to a #guint into which to store the
+    number of angles value from the query, or NULL</doc>
             <type name="guint" c:type="guint*"/>
           </parameter>
         </parameters>
@@ -941,7 +990,9 @@ value from the query, or NULL</doc>
           <parameter name="n_cmds"
                      direction="out"
                      caller-allocates="0"
-                     transfer-ownership="full">
+                     transfer-ownership="full"
+                     optional="1"
+                     allow-none="1">
             <doc xml:space="preserve">the number of commands in this query.</doc>
             <type name="guint" c:type="guint*"/>
           </parameter>
@@ -968,7 +1019,9 @@ set to #GST_NAVIGATION_COMMAND_INVALID.</doc>
           <parameter name="cmd"
                      direction="out"
                      caller-allocates="0"
-                     transfer-ownership="full">
+                     transfer-ownership="full"
+                     optional="1"
+                     allow-none="1">
             <doc xml:space="preserve">a pointer to store the nth command into.</doc>
             <type name="NavigationCommand" c:type="GstNavigationCommand*"/>
           </parameter>
@@ -1035,8 +1088,13 @@ of commands passed must be equal to @n_commands.</doc>
             <type name="gint" c:type="gint"/>
           </parameter>
           <parameter name="cmds" transfer-ownership="none">
-            <doc xml:space="preserve">An array containing @n_cmds @GstNavigationCommand values.</doc>
-            <type name="NavigationCommand" c:type="GstNavigationCommand*"/>
+            <doc xml:space="preserve">An array containing @n_cmds
+    @GstNavigationCommand values.</doc>
+            <array length="1"
+                   zero-terminated="0"
+                   c:type="GstNavigationCommand*">
+              <type name="NavigationCommand" c:type="GstNavigationCommand"/>
+            </array>
           </parameter>
         </parameters>
       </function>
@@ -1612,6 +1670,13 @@ Default is 0: let the resampler choose a good value.</doc>
       <doc xml:space="preserve">#G_TYPE_INT, source y position to start conversion, default 0</doc>
       <type name="utf8" c:type="gchar*"/>
     </constant>
+    <constant name="VIDEO_CONVERTER_OPT_THREADS"
+              value="GstVideoConverter.threads"
+              c:type="GST_VIDEO_CONVERTER_OPT_THREADS">
+      <doc xml:space="preserve">#G_TYPE_UINT, maximum number of threads to use. Default 1, 0 for the number
+of cores.</doc>
+      <type name="utf8" c:type="gchar*"/>
+    </constant>
     <constant name="VIDEO_DECODER_MAX_ERRORS"
               value="10"
               c:type="GST_VIDEO_DECODER_MAX_ERRORS">
@@ -1643,7 +1708,7 @@ Default is 0: let the resampler choose a good value.</doc>
       <type name="utf8" c:type="gchar*"/>
     </constant>
     <constant name="VIDEO_FORMATS_ALL"
-              value="{ I420, YV12, YUY2, UYVY, VYUY, AYUV, RGBx, BGRx, xRGB, xBGR, RGBA, BGRA, ARGB, ABGR, RGB, BGR, Y41B, Y42B, YVYU, Y444, v210, v216, NV12, NV21, NV16, NV61, NV24, GRAY8, GRAY16_BE, GRAY16_LE, v308, IYU2, RGB16, BGR16, RGB15, BGR15, UYVP, A420, RGB8P, YUV9, YVU9, IYU1, ARGB64, AYUV64, r210, I420_10LE, I420_10BE, I422_10LE, I422_10BE, Y444_10LE, Y444_10BE, GBR, GBR_10LE, GBR_10BE, NV12_64Z32, A420_10LE, A420_10BE, A422_10LE, A422_10BE, A444_10LE, A444_10BE, P010_10LE, P010_10BE }"
+              value="{ I420, YV12, YUY2, UYVY, AYUV, RGBx, BGRx, xRGB, xBGR, RGBA, BGRA, ARGB, ABGR, RGB, BGR, Y41B, Y42B, YVYU, Y444, v210, v216, NV12, NV21, GRAY8, GRAY16_BE, GRAY16_LE, v308, RGB16, BGR16, RGB15, BGR15, UYVP, A420, RGB8P, YUV9, YVU9, IYU1, ARGB64, AYUV64, r210, I420_10BE, I420_10LE, I422_10BE, I422_10LE, Y444_10BE, Y444_10LE, GBR, GBR_10BE, GBR_10LE, NV16, NV24, NV12_64Z32, A420_10BE, A420_10LE, A422_10BE, A422_10LE, A444_10BE, A444_10LE, NV61, P010_10BE, P010_10LE, IYU2, VYUY, GBRA, GBRA_10BE, GBRA_10LE, GBR_12BE, GBR_12LE, GBRA_12BE, GBRA_12LE, I420_12BE, I420_12LE, I422_12BE, I422_12LE, Y444_12BE, Y444_12LE }"
               c:type="GST_VIDEO_FORMATS_ALL">
       <type name="utf8" c:type="gchar*"/>
     </constant>
@@ -1813,7 +1878,7 @@ quatization errors.</doc>
       </function>
     </record>
     <record name="VideoAlignment" c:type="GstVideoAlignment">
-      <doc xml:space="preserve">Extra alignment paramters for the memory of video buffers. This
+      <doc xml:space="preserve">Extra alignment parameters for the memory of video buffers. This
 structure is usually used to configure the bufferpool if it supports the
 #GST_BUFFER_POOL_OPTION_VIDEO_ALIGNMENT.</doc>
       <field name="padding_top" writable="1">
@@ -1959,7 +2024,7 @@ They can conflict with other extended buffer flags.</doc>
       <constructor name="new" c:identifier="gst_video_buffer_pool_new">
         <doc xml:space="preserve">Create a new bufferpool that can allocate video frames. This bufferpool
 supports all the video bufferpool options.</doc>
-        <return-value transfer-ownership="none">
+        <return-value transfer-ownership="full">
           <doc xml:space="preserve">a new #GstBufferPool to allocate video frames</doc>
           <type name="Gst.BufferPool" c:type="GstBufferPool*"/>
         </return-value>
@@ -2997,86 +3062,61 @@ frames.
 
 The GstVideoDecoder base class and derived subclasses should cooperate as
 follows:
-&lt;orderedlist&gt;
-&lt;listitem&gt;
-  &lt;itemizedlist&gt;&lt;title&gt;Configuration&lt;/title&gt;
-  &lt;listitem&gt;&lt;para&gt;
-    Initially, GstVideoDecoder calls @start when the decoder element
+
+## Configuration
+
+  * Initially, GstVideoDecoder calls @start when the decoder element
     is activated, which allows the subclass to perform any global setup.
-  &lt;/para&gt;&lt;/listitem&gt;
-  &lt;listitem&gt;&lt;para&gt;
-    GstVideoDecoder calls @set_format to inform the subclass of caps
+
+  * GstVideoDecoder calls @set_format to inform the subclass of caps
     describing input video data that it is about to receive, including
     possibly configuration data.
     While unlikely, it might be called more than once, if changing input
     parameters require reconfiguration.
-  &lt;/para&gt;&lt;/listitem&gt;
-  &lt;listitem&gt;&lt;para&gt;
-    Incoming data buffers are processed as needed, described in Data
+
+  * Incoming data buffers are processed as needed, described in Data
     Processing below.
-  &lt;/para&gt;&lt;/listitem&gt;
-  &lt;listitem&gt;&lt;para&gt;
-    GstVideoDecoder calls @stop at end of all processing.
-  &lt;/para&gt;&lt;/listitem&gt;
-  &lt;/itemizedlist&gt;
-&lt;/listitem&gt;
-&lt;listitem&gt;
-  &lt;itemizedlist&gt;
-  &lt;title&gt;Data processing&lt;/title&gt;
-    &lt;listitem&gt;&lt;para&gt;
-      The base class gathers input data, and optionally allows subclass
+
+  * GstVideoDecoder calls @stop at end of all processing.
+
+## Data processing
+
+    * The base class gathers input data, and optionally allows subclass
       to parse this into subsequently manageable chunks, typically
       corresponding to and referred to as 'frames'.
-    &lt;/para&gt;&lt;/listitem&gt;
-    &lt;listitem&gt;&lt;para&gt;
-      Each input frame is provided in turn to the subclass' @handle_frame
+
+    * Each input frame is provided in turn to the subclass' @handle_frame
       callback.
       The ownership of the frame is given to the @handle_frame callback.
-    &lt;/para&gt;&lt;/listitem&gt;
-    &lt;listitem&gt;&lt;para&gt;
-      If codec processing results in decoded data, the subclass should call
+
+    * If codec processing results in decoded data, the subclass should call
       @gst_video_decoder_finish_frame to have decoded data pushed.
       downstream. Otherwise, the subclass must call
       @gst_video_decoder_drop_frame, to allow the base class to do timestamp
       and offset tracking, and possibly to requeue the frame for a later
       attempt in the case of reverse playback.
-    &lt;/para&gt;&lt;/listitem&gt;
-  &lt;/itemizedlist&gt;
-&lt;/listitem&gt;
-&lt;listitem&gt;
-  &lt;itemizedlist&gt;&lt;title&gt;Shutdown phase&lt;/title&gt;
-  &lt;listitem&gt;&lt;para&gt;
-    The GstVideoDecoder class calls @stop to inform the subclass that data
+
+## Shutdown phase
+
+  * The GstVideoDecoder class calls @stop to inform the subclass that data
     parsing will be stopped.
-  &lt;/para&gt;&lt;/listitem&gt;
-  &lt;/itemizedlist&gt;
-&lt;/listitem&gt;
-&lt;listitem&gt;
-  &lt;itemizedlist&gt;&lt;title&gt;Additional Notes&lt;/title&gt;
-  &lt;listitem&gt;
-    &lt;itemizedlist&gt;&lt;title&gt;Seeking/Flushing&lt;/title&gt;
-    &lt;listitem&gt;&lt;para&gt;
-  When the pipeline is seeked or otherwise flushed, the subclass is
-  informed via a call to its @reset callback, with the hard parameter
-  set to true. This indicates the subclass should drop any internal data
-  queues and timestamps and prepare for a fresh set of buffers to arrive
-  for parsing and decoding.
-    &lt;/para&gt;&lt;/listitem&gt;
-    &lt;/itemizedlist&gt;
-  &lt;/listitem&gt;
-  &lt;listitem&gt;
-    &lt;itemizedlist&gt;&lt;title&gt;End Of Stream&lt;/title&gt;
-    &lt;listitem&gt;&lt;para&gt;
-  At end-of-stream, the subclass @parse function may be called some final
-  times with the at_eos parameter set to true, indicating that the element
-  should not expect any more data to be arriving, and it should parse and
-  remaining frames and call gst_video_decoder_have_frame() if possible.
-    &lt;/para&gt;&lt;/listitem&gt;
-    &lt;/itemizedlist&gt;
-  &lt;/listitem&gt;
-  &lt;/itemizedlist&gt;
-&lt;/listitem&gt;
-&lt;/orderedlist&gt;
+
+## Additional Notes
+
+  * Seeking/Flushing
+
+    * When the pipeline is seeked or otherwise flushed, the subclass is
+      informed via a call to its @reset callback, with the hard parameter
+      set to true. This indicates the subclass should drop any internal data
+      queues and timestamps and prepare for a fresh set of buffers to arrive
+      for parsing and decoding.
+
+  * End Of Stream
+
+    * At end-of-stream, the subclass @parse function may be called some final
+      times with the at_eos parameter set to true, indicating that the element
+      should not expect any more data to be arriving, and it should parse and
+      remaining frames and call gst_video_decoder_have_frame() if possible.
 
 The subclass is responsible for providing pad template caps for
 source and sink pads. The pads need to be named "sink" and "src". It also
@@ -3108,23 +3148,18 @@ keyframes, unless it knows the upstream elements will do so properly for
 incoming data.
 
 The bare minimum that a functional subclass needs to implement is:
-&lt;itemizedlist&gt;
-  &lt;listitem&gt;&lt;para&gt;Provide pad templates&lt;/para&gt;&lt;/listitem&gt;
-  &lt;listitem&gt;&lt;para&gt;
-     Inform the base class of output caps via
+
+  * Provide pad templates
+  * Inform the base class of output caps via
      @gst_video_decoder_set_output_state
-  &lt;/para&gt;&lt;/listitem&gt;
-  &lt;listitem&gt;&lt;para&gt;
-     Parse input data, if it is not considered packetized from upstream
+
+  * Parse input data, if it is not considered packetized from upstream
      Data will be provided to @parse which should invoke
      @gst_video_decoder_add_to_frame and @gst_video_decoder_have_frame to
      separate the data belonging to each video frame.
-  &lt;/para&gt;&lt;/listitem&gt;
-  &lt;listitem&gt;&lt;para&gt;
-     Accept data in @handle_frame and provide decoded results to
-     @gst_video_decoder_finish_frame, or call @gst_video_decoder_drop_frame.
-  &lt;/para&gt;&lt;/listitem&gt;
-&lt;/itemizedlist&gt;</doc>
+
+  * Accept data in @handle_frame and provide decoded results to
+     @gst_video_decoder_finish_frame, or call @gst_video_decoder_drop_frame.</doc>
       <virtual-method name="close">
         <return-value transfer-ownership="none">
           <type name="gboolean" c:type="gboolean"/>
@@ -3431,6 +3466,31 @@ keep references to the frame, not the buffer.</doc>
           <parameter name="frame" transfer-ownership="none">
             <doc xml:space="preserve">a #GstVideoCodecFrame</doc>
             <type name="VideoCodecFrame" c:type="GstVideoCodecFrame*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="allocate_output_frame_with_params"
+              c:identifier="gst_video_decoder_allocate_output_frame_with_params"
+              version="1.12">
+        <doc xml:space="preserve">Same as #gst_video_decoder_allocate_output_frame except it allows passing
+#GstBufferPoolAcquireParams to the sub call gst_buffer_pool_acquire_buffer.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">%GST_FLOW_OK if an output buffer could be allocated</doc>
+          <type name="Gst.FlowReturn" c:type="GstFlowReturn"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="decoder" transfer-ownership="none">
+            <doc xml:space="preserve">a #GstVideoDecoder</doc>
+            <type name="VideoDecoder" c:type="GstVideoDecoder*"/>
+          </instance-parameter>
+          <parameter name="frame" transfer-ownership="none">
+            <doc xml:space="preserve">a #GstVideoCodecFrame</doc>
+            <type name="VideoCodecFrame" c:type="GstVideoCodecFrame*"/>
+          </parameter>
+          <parameter name="params" transfer-ownership="none">
+            <doc xml:space="preserve">a #GstBufferPoolAcquireParams</doc>
+            <type name="Gst.BufferPoolAcquireParams"
+                  c:type="GstBufferPoolAcquireParams*"/>
           </parameter>
         </parameters>
       </method>
@@ -4529,59 +4589,40 @@ performance is achived when @quantizer is a power of 2.
 encoded video data.
 
 GstVideoEncoder and subclass should cooperate as follows.
-&lt;orderedlist&gt;
-&lt;listitem&gt;
-  &lt;itemizedlist&gt;&lt;title&gt;Configuration&lt;/title&gt;
-  &lt;listitem&gt;&lt;para&gt;
-    Initially, GstVideoEncoder calls @start when the encoder element
+
+## Configuration
+
+  * Initially, GstVideoEncoder calls @start when the encoder element
     is activated, which allows subclass to perform any global setup.
-  &lt;/para&gt;&lt;/listitem&gt;
-  &lt;listitem&gt;&lt;para&gt;
-    GstVideoEncoder calls @set_format to inform subclass of the format
+  * GstVideoEncoder calls @set_format to inform subclass of the format
     of input video data that it is about to receive.  Subclass should
     setup for encoding and configure base class as appropriate
     (e.g. latency). While unlikely, it might be called more than once,
     if changing input parameters require reconfiguration.  Baseclass
     will ensure that processing of current configuration is finished.
-  &lt;/para&gt;&lt;/listitem&gt;
-  &lt;listitem&gt;&lt;para&gt;
-    GstVideoEncoder calls @stop at end of all processing.
-  &lt;/para&gt;&lt;/listitem&gt;
-  &lt;/itemizedlist&gt;
-&lt;/listitem&gt;
-&lt;listitem&gt;
-  &lt;itemizedlist&gt;
-  &lt;title&gt;Data processing&lt;/title&gt;
-    &lt;listitem&gt;&lt;para&gt;
-      Base class collects input data and metadata into a frame and hands
+  * GstVideoEncoder calls @stop at end of all processing.
+
+## Data processing
+
+    * Base class collects input data and metadata into a frame and hands
       this to subclass' @handle_frame.
-    &lt;/para&gt;&lt;/listitem&gt;
-    &lt;listitem&gt;&lt;para&gt;
-      If codec processing results in encoded data, subclass should call
+
+    * If codec processing results in encoded data, subclass should call
       @gst_video_encoder_finish_frame to have encoded data pushed
       downstream.
-    &lt;/para&gt;&lt;/listitem&gt;
-    &lt;listitem&gt;&lt;para&gt;
-      If implemented, baseclass calls subclass @pre_push just prior to
+
+    * If implemented, baseclass calls subclass @pre_push just prior to
       pushing to allow subclasses to modify some metadata on the buffer.
       If it returns GST_FLOW_OK, the buffer is pushed downstream.
-    &lt;/para&gt;&lt;/listitem&gt;
-    &lt;listitem&gt;&lt;para&gt;
-      GstVideoEncoderClass will handle both srcpad and sinkpad events.
+
+    * GstVideoEncoderClass will handle both srcpad and sinkpad events.
       Sink events will be passed to subclass if @event callback has been
       provided.
-    &lt;/para&gt;&lt;/listitem&gt;
-  &lt;/itemizedlist&gt;
-&lt;/listitem&gt;
-&lt;listitem&gt;
-  &lt;itemizedlist&gt;&lt;title&gt;Shutdown phase&lt;/title&gt;
-  &lt;listitem&gt;&lt;para&gt;
-    GstVideoEncoder class calls @stop to inform the subclass that data
+
+## Shutdown phase
+
+  * GstVideoEncoder class calls @stop to inform the subclass that data
     parsing will be stopped.
-  &lt;/para&gt;&lt;/listitem&gt;
-  &lt;/itemizedlist&gt;
-&lt;/listitem&gt;
-&lt;/orderedlist&gt;
 
 Subclass is responsible for providing pad template caps for
 source and sink pads. The pads need to be named "sink" and "src". It should
@@ -4589,16 +4630,11 @@ also be able to provide fixed src pad caps in @getcaps by the time it calls
 @gst_video_encoder_finish_frame.
 
 Things that subclass need to take care of:
-&lt;itemizedlist&gt;
-  &lt;listitem&gt;&lt;para&gt;Provide pad templates&lt;/para&gt;&lt;/listitem&gt;
-  &lt;listitem&gt;&lt;para&gt;
-     Provide source pad caps before pushing the first buffer
-  &lt;/para&gt;&lt;/listitem&gt;
-  &lt;listitem&gt;&lt;para&gt;
-     Accept data in @handle_frame and provide encoded results to
-     @gst_video_encoder_finish_frame.
-  &lt;/para&gt;&lt;/listitem&gt;
-&lt;/itemizedlist&gt;</doc>
+
+  * Provide pad templates
+  * Provide source pad caps before pushing the first buffer
+  * Accept data in @handle_frame and provide encoded results to
+     @gst_video_encoder_finish_frame.</doc>
       <implements name="Gst.Preset"/>
       <virtual-method name="close">
         <return-value transfer-ownership="none">
@@ -5533,7 +5569,7 @@ and @get_caps are likely needed as well.</doc>
                  glib:get-type="gst_video_field_order_get_type"
                  c:type="GstVideoFieldOrder">
       <doc xml:space="preserve">Field order of interlaced content. This is only valid for
-interlaced-mode=interleaved and not interlaced-mode=mixed. In the case of
+interlace-mode=interleaved and not interlace-mode=mixed. In the case of
 mixed or GST_VIDEO_FIELD_ORDER_UNKOWN, the field order is signalled via
 buffer flags.</doc>
       <member name="unknown"
@@ -5596,15 +5632,10 @@ buffer flags.</doc>
            glib:type-name="GstVideoFilter"
            glib:get-type="gst_video_filter_get_type"
            glib:type-struct="VideoFilterClass">
-      <doc xml:space="preserve">&lt;refsect2&gt;
-&lt;para&gt;
-Provides useful functions and a base class for video filters.
-&lt;/para&gt;
-&lt;para&gt;
+      <doc xml:space="preserve">Provides useful functions and a base class for video filters.
+
 The videofilter will by default enable QoS on the parent GstBaseTransform
-to implement frame dropping.
-&lt;/para&gt;
-&lt;/refsect2&gt;</doc>
+to implement frame dropping.</doc>
       <virtual-method name="set_info">
         <return-value transfer-ownership="none">
           <type name="gboolean" c:type="gboolean"/>
@@ -6060,103 +6091,103 @@ to implement frame dropping.
               value="46"
               c:identifier="GST_VIDEO_FORMAT_Y444_10BE"
               glib:nick="y444-10be">
-        <doc xml:space="preserve">planar 4:4:4 YUV, 10 bits per channel</doc>
+        <doc xml:space="preserve">planar 4:4:4 YUV, 10 bits per channel (Since: 1.2)</doc>
       </member>
       <member name="y444_10le"
               value="47"
               c:identifier="GST_VIDEO_FORMAT_Y444_10LE"
               glib:nick="y444-10le">
-        <doc xml:space="preserve">planar 4:4:4 YUV, 10 bits per channel</doc>
+        <doc xml:space="preserve">planar 4:4:4 YUV, 10 bits per channel (Since: 1.2)</doc>
       </member>
       <member name="gbr"
               value="48"
               c:identifier="GST_VIDEO_FORMAT_GBR"
               glib:nick="gbr">
-        <doc xml:space="preserve">planar 4:4:4 RGB, 8 bits per channel</doc>
+        <doc xml:space="preserve">planar 4:4:4 RGB, 8 bits per channel (Since: 1.2)</doc>
       </member>
       <member name="gbr_10be"
               value="49"
               c:identifier="GST_VIDEO_FORMAT_GBR_10BE"
               glib:nick="gbr-10be">
-        <doc xml:space="preserve">planar 4:4:4 RGB, 10 bits per channel</doc>
+        <doc xml:space="preserve">planar 4:4:4 RGB, 10 bits per channel (Since: 1.2)</doc>
       </member>
       <member name="gbr_10le"
               value="50"
               c:identifier="GST_VIDEO_FORMAT_GBR_10LE"
               glib:nick="gbr-10le">
-        <doc xml:space="preserve">planar 4:4:4 RGB, 10 bits per channel</doc>
+        <doc xml:space="preserve">planar 4:4:4 RGB, 10 bits per channel (Since: 1.2)</doc>
       </member>
       <member name="nv16"
               value="51"
               c:identifier="GST_VIDEO_FORMAT_NV16"
               glib:nick="nv16">
-        <doc xml:space="preserve">planar 4:2:2 YUV with interleaved UV plane</doc>
+        <doc xml:space="preserve">planar 4:2:2 YUV with interleaved UV plane (Since: 1.2)</doc>
       </member>
       <member name="nv24"
               value="52"
               c:identifier="GST_VIDEO_FORMAT_NV24"
               glib:nick="nv24">
-        <doc xml:space="preserve">planar 4:4:4 YUV with interleaved UV plane</doc>
+        <doc xml:space="preserve">planar 4:4:4 YUV with interleaved UV plane (Since: 1.2)</doc>
       </member>
       <member name="nv12_64z32"
               value="53"
               c:identifier="GST_VIDEO_FORMAT_NV12_64Z32"
               glib:nick="nv12-64z32">
-        <doc xml:space="preserve">NV12 with 64x32 tiling in zigzag pattern</doc>
+        <doc xml:space="preserve">NV12 with 64x32 tiling in zigzag pattern (Since: 1.4)</doc>
       </member>
       <member name="a420_10be"
               value="54"
               c:identifier="GST_VIDEO_FORMAT_A420_10BE"
               glib:nick="a420-10be">
-        <doc xml:space="preserve">planar 4:4:2:0 YUV, 10 bits per channel</doc>
+        <doc xml:space="preserve">planar 4:4:2:0 YUV, 10 bits per channel (Since: 1.6)</doc>
       </member>
       <member name="a420_10le"
               value="55"
               c:identifier="GST_VIDEO_FORMAT_A420_10LE"
               glib:nick="a420-10le">
-        <doc xml:space="preserve">planar 4:4:2:0 YUV, 10 bits per channel</doc>
+        <doc xml:space="preserve">planar 4:4:2:0 YUV, 10 bits per channel (Since: 1.6)</doc>
       </member>
       <member name="a422_10be"
               value="56"
               c:identifier="GST_VIDEO_FORMAT_A422_10BE"
               glib:nick="a422-10be">
-        <doc xml:space="preserve">planar 4:4:2:2 YUV, 10 bits per channel</doc>
+        <doc xml:space="preserve">planar 4:4:2:2 YUV, 10 bits per channel (Since: 1.6)</doc>
       </member>
       <member name="a422_10le"
               value="57"
               c:identifier="GST_VIDEO_FORMAT_A422_10LE"
               glib:nick="a422-10le">
-        <doc xml:space="preserve">planar 4:4:2:2 YUV, 10 bits per channel</doc>
+        <doc xml:space="preserve">planar 4:4:2:2 YUV, 10 bits per channel (Since: 1.6)</doc>
       </member>
       <member name="a444_10be"
               value="58"
               c:identifier="GST_VIDEO_FORMAT_A444_10BE"
               glib:nick="a444-10be">
-        <doc xml:space="preserve">planar 4:4:4:4 YUV, 10 bits per channel</doc>
+        <doc xml:space="preserve">planar 4:4:4:4 YUV, 10 bits per channel (Since: 1.6)</doc>
       </member>
       <member name="a444_10le"
               value="59"
               c:identifier="GST_VIDEO_FORMAT_A444_10LE"
               glib:nick="a444-10le">
-        <doc xml:space="preserve">planar 4:4:4:4 YUV, 10 bits per channel</doc>
+        <doc xml:space="preserve">planar 4:4:4:4 YUV, 10 bits per channel (Since: 1.6)</doc>
       </member>
       <member name="nv61"
               value="60"
               c:identifier="GST_VIDEO_FORMAT_NV61"
               glib:nick="nv61">
-        <doc xml:space="preserve">planar 4:2:2 YUV with interleaved VU plane (Since 1.6)</doc>
+        <doc xml:space="preserve">planar 4:2:2 YUV with interleaved VU plane (Since: 1.6)</doc>
       </member>
       <member name="p010_10be"
               value="61"
               c:identifier="GST_VIDEO_FORMAT_P010_10BE"
               glib:nick="p010-10be">
-        <doc xml:space="preserve">planar 4:2:0 YUV with interleaved UV plane, 10 bits per channel</doc>
+        <doc xml:space="preserve">planar 4:2:0 YUV with interleaved UV plane, 10 bits per channel (Since: 1.10)</doc>
       </member>
       <member name="p010_10le"
               value="62"
               c:identifier="GST_VIDEO_FORMAT_P010_10LE"
               glib:nick="p010-10le">
-        <doc xml:space="preserve">planar 4:2:0 YUV with interleaved UV plane, 10 bits per channel</doc>
+        <doc xml:space="preserve">planar 4:2:0 YUV with interleaved UV plane, 10 bits per channel (Since: 1.10)</doc>
       </member>
       <member name="iyu2"
               value="63"
@@ -6169,6 +6200,84 @@ to implement frame dropping.
               c:identifier="GST_VIDEO_FORMAT_VYUY"
               glib:nick="vyuy">
         <doc xml:space="preserve">packed 4:2:2 YUV (V0-Y0-U0-Y1 V2-Y2-U2-Y3 V4 ...)</doc>
+      </member>
+      <member name="gbra"
+              value="65"
+              c:identifier="GST_VIDEO_FORMAT_GBRA"
+              glib:nick="gbra">
+        <doc xml:space="preserve">planar 4:4:4:4 ARGB, 8 bits per channel (Since: 1.12)</doc>
+      </member>
+      <member name="gbra_10be"
+              value="66"
+              c:identifier="GST_VIDEO_FORMAT_GBRA_10BE"
+              glib:nick="gbra-10be">
+        <doc xml:space="preserve">planar 4:4:4:4 ARGB, 10 bits per channel (Since: 1.12)</doc>
+      </member>
+      <member name="gbra_10le"
+              value="67"
+              c:identifier="GST_VIDEO_FORMAT_GBRA_10LE"
+              glib:nick="gbra-10le">
+        <doc xml:space="preserve">planar 4:4:4:4 ARGB, 10 bits per channel (Since: 1.12)</doc>
+      </member>
+      <member name="gbr_12be"
+              value="68"
+              c:identifier="GST_VIDEO_FORMAT_GBR_12BE"
+              glib:nick="gbr-12be">
+        <doc xml:space="preserve">planar 4:4:4 RGB, 12 bits per channel (Since: 1.12)</doc>
+      </member>
+      <member name="gbr_12le"
+              value="69"
+              c:identifier="GST_VIDEO_FORMAT_GBR_12LE"
+              glib:nick="gbr-12le">
+        <doc xml:space="preserve">planar 4:4:4 RGB, 12 bits per channel (Since: 1.12)</doc>
+      </member>
+      <member name="gbra_12be"
+              value="70"
+              c:identifier="GST_VIDEO_FORMAT_GBRA_12BE"
+              glib:nick="gbra-12be">
+        <doc xml:space="preserve">planar 4:4:4:4 ARGB, 12 bits per channel (Since: 1.12)</doc>
+      </member>
+      <member name="gbra_12le"
+              value="71"
+              c:identifier="GST_VIDEO_FORMAT_GBRA_12LE"
+              glib:nick="gbra-12le">
+        <doc xml:space="preserve">planar 4:4:4:4 ARGB, 12 bits per channel (Since: 1.12)</doc>
+      </member>
+      <member name="i420_12be"
+              value="72"
+              c:identifier="GST_VIDEO_FORMAT_I420_12BE"
+              glib:nick="i420-12be">
+        <doc xml:space="preserve">planar 4:2:0 YUV, 12 bits per channel (Since: 1.12)</doc>
+      </member>
+      <member name="i420_12le"
+              value="73"
+              c:identifier="GST_VIDEO_FORMAT_I420_12LE"
+              glib:nick="i420-12le">
+        <doc xml:space="preserve">planar 4:2:0 YUV, 12 bits per channel (Since: 1.12)</doc>
+      </member>
+      <member name="i422_12be"
+              value="74"
+              c:identifier="GST_VIDEO_FORMAT_I422_12BE"
+              glib:nick="i422-12be">
+        <doc xml:space="preserve">planar 4:2:2 YUV, 12 bits per channel (Since: 1.12)</doc>
+      </member>
+      <member name="i422_12le"
+              value="75"
+              c:identifier="GST_VIDEO_FORMAT_I422_12LE"
+              glib:nick="i422-12le">
+        <doc xml:space="preserve">planar 4:2:2 YUV, 12 bits per channel (Since: 1.12)</doc>
+      </member>
+      <member name="y444_12be"
+              value="76"
+              c:identifier="GST_VIDEO_FORMAT_Y444_12BE"
+              glib:nick="y444-12be">
+        <doc xml:space="preserve">planar 4:4:4 YUV, 12 bits per channel (Since: 1.12)</doc>
+      </member>
+      <member name="y444_12le"
+              value="77"
+              c:identifier="GST_VIDEO_FORMAT_Y444_12LE"
+              glib:nick="y444-12le">
+        <doc xml:space="preserve">planar 4:4:4 YUV, 12 bits per channel (Since: 1.12)</doc>
       </member>
       <function name="from_fourcc" c:identifier="gst_video_format_from_fourcc">
         <doc xml:space="preserve">Converts a FOURCC value into the corresponding #GstVideoFormat.
@@ -7150,7 +7259,9 @@ stride alignment in @align is respected.
 Extra padding will be added to the right side when stride alignment padding
 is required and @align will be updated with the new padding values.</doc>
         <return-value transfer-ownership="none">
-          <type name="none" c:type="void"/>
+          <doc xml:space="preserve">%FALSE if alignment could not be applied, e.g. because the
+  size of a frame can't be represented as a 32 bit integer (Since: 1.12)</doc>
+          <type name="gboolean" c:type="gboolean"/>
         </return-value>
         <parameters>
           <instance-parameter name="info" transfer-ownership="none">
@@ -7274,7 +7385,9 @@ Note: This initializes @info first, no values are preserved. This function
 does not set the offsets correctly for interlaced vertically
 subsampled formats.</doc>
         <return-value transfer-ownership="none">
-          <type name="none" c:type="void"/>
+          <doc xml:space="preserve">%FALSE if the returned video info is invalid, e.g. because the
+  size of a frame can't be represented as a 32 bit integer (Since: 1.12)</doc>
+          <type name="gboolean" c:type="gboolean"/>
         </return-value>
         <parameters>
           <instance-parameter name="info" transfer-ownership="none">
@@ -8421,36 +8534,23 @@ operation of video-sources or operators.</doc>
                glib:type-name="GstVideoOverlay"
                glib:get-type="gst_video_overlay_get_type"
                glib:type-struct="VideoOverlayInterface">
-      <doc xml:space="preserve">&lt;refsect2&gt;
-&lt;para&gt;
-The #GstVideoOverlay interface is used for 2 main purposes :
-&lt;itemizedlist&gt;
-&lt;listitem&gt;
-&lt;para&gt;
-To get a grab on the Window where the video sink element is going to render.
-This is achieved by either being informed about the Window identifier that
-the video sink element generated, or by forcing the video sink element to use
-a specific Window identifier for rendering.
-&lt;/para&gt;
-&lt;/listitem&gt;
-&lt;listitem&gt;
-&lt;para&gt;
-To force a redrawing of the latest video frame the video sink element
-displayed on the Window. Indeed if the #GstPipeline is in #GST_STATE_PAUSED
-state, moving the Window around will damage its content. Application
-developers will want to handle the Expose events themselves and force the
-video sink element to refresh the Window's content.
-&lt;/para&gt;
-&lt;/listitem&gt;
-&lt;/itemizedlist&gt;
-&lt;/para&gt;
-&lt;para&gt;
+      <doc xml:space="preserve">The #GstVideoOverlay interface is used for 2 main purposes :
+
+* To get a grab on the Window where the video sink element is going to render.
+  This is achieved by either being informed about the Window identifier that
+  the video sink element generated, or by forcing the video sink element to use
+  a specific Window identifier for rendering.
+* To force a redrawing of the latest video frame the video sink element
+  displayed on the Window. Indeed if the #GstPipeline is in #GST_STATE_PAUSED
+  state, moving the Window around will damage its content. Application
+  developers will want to handle the Expose events themselves and force the
+  video sink element to refresh the Window's content.
+
 Using the Window created by the video sink is probably the simplest scenario,
 in some cases, though, it might not be flexible enough for application
 developers if they need to catch events such as mouse moves and button
 clicks.
-&lt;/para&gt;
-&lt;para&gt;
+
 Setting a specific Window identifier on the video sink element is the most
 flexible solution but it has some issues. Indeed the application needs to set
 its Window identifier at the right time to avoid internal Window creation
@@ -8491,11 +8591,9 @@ main (int argc, char **argv)
 ...
 }
 ]|
-&lt;/para&gt;
-&lt;/refsect2&gt;
-&lt;refsect2&gt;
-&lt;title&gt;Two basic usage scenarios&lt;/title&gt;
-&lt;para&gt;
+
+## Two basic usage scenarios
+
 There are two basic usage scenarios: in the simplest case, the application
 uses #playbin or #plasink or knows exactly what particular element is used
 for video output, which is usually the case when the application creates
@@ -8507,8 +8605,7 @@ window handle, before starting up the pipeline.
 As #playbin and #playsink implement the video overlay interface and proxy
 it transparently to the actual video sink even if it is created later, this
 case also applies when using these elements.
-&lt;/para&gt;
-&lt;para&gt;
+
 In the other and more common case, the application does not know in advance
 what GStreamer video sink element will be used for video output. This is
 usually the case when an element such as #autovideosink is used.
@@ -8520,8 +8617,7 @@ application window or whether to create its own window. This is when it
 posts a prepare-window-handle message, and that is also why this message needs
 to be handled in a sync bus handler which will be called from the streaming
 thread directly (because the video sink will need an answer right then).
-&lt;/para&gt;
-&lt;para&gt;
+
 As response to the prepare-window-handle element message in the bus sync
 handler, the application may use gst_video_overlay_set_window_handle() to tell
 the video sink to render onto an existing window surface. At this point the
@@ -8537,11 +8633,9 @@ within the bus sync handler; this macro was changed to a function call in
 Gtk+ 2.18 and later, which is likely to cause problems when called from a
 sync handler; see below for a better approach without GDK_WINDOW_XID()
 used in the callback).
-&lt;/para&gt;
-&lt;/refsect2&gt;
-&lt;refsect2&gt;
-&lt;title&gt;GstVideoOverlay and Gtk+&lt;/title&gt;
-&lt;para&gt;
+
+## GstVideoOverlay and Gtk+
+
 |[
 #include &amp;lt;gst/video/videooverlay.h&amp;gt;
 #include &amp;lt;gtk/gtk.h&amp;gt;
@@ -8640,11 +8734,9 @@ main (int argc, char **argv)
   ...
 }
 ]|
-&lt;/para&gt;
-&lt;/refsect2&gt;
-&lt;refsect2&gt;
-&lt;title&gt;GstVideoOverlay and Qt&lt;/title&gt;
-&lt;para&gt;
+
+## GstVideoOverlay and Qt
+
 |[
 #include &amp;lt;glib.h&amp;gt;
 #include &amp;lt;gst/gst.h&amp;gt;
@@ -8699,9 +8791,7 @@ int main(int argc, char *argv[])
 
   return ret;
 }
-]|
-&lt;/para&gt;
-&lt;/refsect2&gt;</doc>
+]|</doc>
       <virtual-method name="expose" invoker="expose">
         <doc xml:space="preserve">Tell an overlay that it has been exposed. This will redraw the current frame
 in the drawable even if the pipeline is PAUSED.</doc>
@@ -8912,37 +9002,28 @@ tell the overlay to stop using that window and create an internal one.</doc>
             glib:type-name="GstVideoOverlayComposition"
             glib:get-type="gst_video_overlay_composition_get_type"
             c:symbol-prefix="video_overlay_composition">
-      <doc xml:space="preserve">&lt;refsect2&gt;
-&lt;para&gt;
-Functions to create and handle overlay compositions on video buffers.
-&lt;/para&gt;
-&lt;para&gt;
+      <doc xml:space="preserve">Functions to create and handle overlay compositions on video buffers.
+
 An overlay composition describes one or more overlay rectangles to be
 blended on top of a video buffer.
-&lt;/para&gt;
-&lt;para&gt;
+
 This API serves two main purposes:
-&lt;itemizedlist&gt;
-&lt;listitem&gt;
-it can be used to attach overlay information (subtitles or logos)
-to non-raw video buffers such as GL/VAAPI/VDPAU surfaces. The actual
-blending of the overlay can then be done by e.g. the video sink that
-processes these non-raw buffers.
-&lt;/listitem&gt;
-&lt;listitem&gt;
-it can also be used to blend overlay rectangles on top of raw video
-buffers, thus consolidating blending functionality for raw video in
-one place.
-&lt;/listitem&gt;
+
+* it can be used to attach overlay information (subtitles or logos)
+  to non-raw video buffers such as GL/VAAPI/VDPAU surfaces. The actual
+  blending of the overlay can then be done by e.g. the video sink that
+  processes these non-raw buffers.
+
+* it can also be used to blend overlay rectangles on top of raw video
+  buffers, thus consolidating blending functionality for raw video in
+  one place.
+
 Together, this allows existing overlay elements to easily handle raw
 and non-raw video as input in without major changes (once the overlays
 have been put into a #GstOverlayComposition object anyway) - for raw
 video the overlay can just use the blending function to blend the data
 on top of the video, and for surface buffers it can just attach them to
-the buffer and let the sink render the overlays.
-&lt;/itemizedlist&gt;
-&lt;/para&gt;
-&lt;/refsect2&gt;</doc>
+the buffer and let the sink render the overlays.</doc>
       <constructor name="new" c:identifier="gst_video_overlay_composition_new">
         <doc xml:space="preserve">Creates a new video overlay composition object to hold one or more
 overlay rectangles.</doc>
@@ -10211,16 +10292,11 @@ on the @method and @in_size/@out_size.</doc>
            glib:type-name="GstVideoSink"
            glib:get-type="gst_video_sink_get_type"
            glib:type-struct="VideoSinkClass">
-      <doc xml:space="preserve">&lt;refsect2&gt;
-&lt;para&gt;
-Provides useful functions and a base class for video sinks.
-&lt;/para&gt;
-&lt;para&gt;
+      <doc xml:space="preserve">Provides useful functions and a base class for video sinks.
+
 GstVideoSink will configure the default base sink to drop frames that
 arrive later than 20ms as this is considered the default threshold for
-observing out-of-sync frames.
-&lt;/para&gt;
-&lt;/refsect2&gt;</doc>
+observing out-of-sync frames.</doc>
       <function name="center_rect" c:identifier="gst_video_sink_center_rect">
         <doc xml:space="preserve">Takes @src rectangle and position it at the center of @dst rectangle with or
 without @scaling. It handles clipping if the @src rectangle is bigger than
@@ -10399,7 +10475,9 @@ These values are *NOT* automatically normalized.</doc>
         <doc xml:space="preserve">@field_count is 0 for progressive, 1 or 2 for interlaced.
 @latest_daiy_jam reference is stolen from caller.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:space="preserve">a new #GstVideoTimeCode with the given values.</doc>
+          <doc xml:space="preserve">a new #GstVideoTimeCode with the given values.
+The values are not checked for being in a valid range. To see if your
+timecode actually has valid content, use #gst_video_time_code_is_valid.</doc>
           <type name="VideoTimeCode" c:type="GstVideoTimeCode*"/>
         </return-value>
         <parameters>
@@ -10449,21 +10527,98 @@ These values are *NOT* automatically normalized.</doc>
           <type name="VideoTimeCode" c:type="GstVideoTimeCode*"/>
         </return-value>
       </constructor>
+      <constructor name="new_from_date_time"
+                   c:identifier="gst_video_time_code_new_from_date_time"
+                   version="1.12">
+        <doc xml:space="preserve">The resulting config-&gt;latest_daily_jam is set to
+midnight, and timecode is set to the given time.</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:space="preserve">the #GVideoTimeCode representation of @dt.</doc>
+          <type name="VideoTimeCode" c:type="GstVideoTimeCode*"/>
+        </return-value>
+        <parameters>
+          <parameter name="fps_n" transfer-ownership="none">
+            <doc xml:space="preserve">Numerator of the frame rate</doc>
+            <type name="guint" c:type="guint"/>
+          </parameter>
+          <parameter name="fps_d" transfer-ownership="none">
+            <doc xml:space="preserve">Denominator of the frame rate</doc>
+            <type name="guint" c:type="guint"/>
+          </parameter>
+          <parameter name="dt" transfer-ownership="none">
+            <doc xml:space="preserve">#GDateTime to convert</doc>
+            <type name="GLib.DateTime" c:type="GDateTime*"/>
+          </parameter>
+          <parameter name="flags" transfer-ownership="none">
+            <doc xml:space="preserve">#GstVideoTimeCodeFlags</doc>
+            <type name="VideoTimeCodeFlags" c:type="GstVideoTimeCodeFlags"/>
+          </parameter>
+          <parameter name="field_count" transfer-ownership="none">
+            <doc xml:space="preserve">Interlaced video field count</doc>
+            <type name="guint" c:type="guint"/>
+          </parameter>
+        </parameters>
+      </constructor>
+      <constructor name="new_from_string"
+                   c:identifier="gst_video_time_code_new_from_string"
+                   version="1.12">
+        <return-value transfer-ownership="full">
+          <doc xml:space="preserve">a new #GstVideoTimeCode from the given string</doc>
+          <type name="VideoTimeCode" c:type="GstVideoTimeCode*"/>
+        </return-value>
+        <parameters>
+          <parameter name="tc_str" transfer-ownership="none">
+            <doc xml:space="preserve">The string that represents the #GstVideoTimeCode</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </constructor>
       <method name="add_frames"
               c:identifier="gst_video_time_code_add_frames"
               version="1.10">
-        <doc xml:space="preserve">Adds or subtracts @frames amount of frames to @tc .</doc>
+        <doc xml:space="preserve">Adds or subtracts @frames amount of frames to @tc. tc needs to
+contain valid data, as verified by #gst_video_time_code_is_valid.</doc>
         <return-value transfer-ownership="none">
           <type name="none" c:type="void"/>
         </return-value>
         <parameters>
           <instance-parameter name="tc" transfer-ownership="none">
-            <doc xml:space="preserve">a #GstVideoTimeCode</doc>
+            <doc xml:space="preserve">a valid #GstVideoTimeCode</doc>
             <type name="VideoTimeCode" c:type="GstVideoTimeCode*"/>
           </instance-parameter>
           <parameter name="frames" transfer-ownership="none">
             <doc xml:space="preserve">How many frames to add or subtract</doc>
             <type name="gint64" c:type="gint64"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="add_interval"
+              c:identifier="gst_video_time_code_add_interval"
+              version="1.12">
+        <doc xml:space="preserve">This makes a component-wise addition of @tc_inter to @tc. For example,
+adding ("01:02:03:04", "00:01:00:00") will return "01:03:03:04".
+When it comes to drop-frame timecodes,
+adding ("00:00:00;00", "00:01:00:00") will return "00:01:00;02"
+because of drop-frame oddities. However,
+adding ("00:09:00;02", "00:01:00:00") will return "00:10:00;00"
+because this time we can have an exact minute.</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:space="preserve">A new #GstVideoTimeCode with @tc_inter added.</doc>
+          <type name="VideoTimeCode" c:type="GstVideoTimeCode*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="tc" transfer-ownership="none">
+            <doc xml:space="preserve">The #GstVideoTimeCode where the diff should be added. This
+must contain valid timecode values.</doc>
+            <type name="VideoTimeCode" c:type="const GstVideoTimeCode*"/>
+          </instance-parameter>
+          <parameter name="tc_inter" transfer-ownership="none">
+            <doc xml:space="preserve">The #GstVideoTimeCodeInterval to add to @tc.
+The interval must contain valid values, except that for drop-frame
+timecode, it may also contain timecodes which would normally
+be dropped. These are then corrected to the next reasonable timecode.</doc>
+            <type name="VideoTimeCodeInterval"
+                  c:type="const GstVideoTimeCodeInterval*"/>
           </parameter>
         </parameters>
       </method>
@@ -10486,7 +10641,7 @@ These values are *NOT* automatically normalized.</doc>
               version="1.10">
         <doc xml:space="preserve">Compares @tc1 and @tc2 . If both have latest daily jam information, it is
 taken into account. Otherwise, it is assumed that the daily jam of both
-@tc1 and @tc2 was at the same time.</doc>
+@tc1 and @tc2 was at the same time. Both time codes must be valid.</doc>
         <return-value transfer-ownership="none">
           <doc xml:space="preserve">1 if @tc1 is after @tc2, -1 if @tc1 is before @tc2, 0 otherwise.</doc>
           <type name="gint" c:type="gint"/>
@@ -10525,7 +10680,7 @@ taken into account. Otherwise, it is assumed that the daily jam of both
         </return-value>
         <parameters>
           <instance-parameter name="tc" transfer-ownership="none">
-            <doc xml:space="preserve">a #GstVideoTimeCode</doc>
+            <doc xml:space="preserve">a valid #GstVideoTimeCode</doc>
             <type name="VideoTimeCode" c:type="const GstVideoTimeCode*"/>
           </instance-parameter>
         </parameters>
@@ -10553,7 +10708,7 @@ taken into account. Otherwise, it is assumed that the daily jam of both
         </return-value>
         <parameters>
           <instance-parameter name="tc" transfer-ownership="none">
-            <doc xml:space="preserve">a #GstVideoTimeCode</doc>
+            <doc xml:space="preserve">a valid #GstVideoTimeCode</doc>
             <type name="VideoTimeCode" c:type="GstVideoTimeCode*"/>
           </instance-parameter>
         </parameters>
@@ -10564,7 +10719,9 @@ taken into account. Otherwise, it is assumed that the daily jam of both
         <doc xml:space="preserve">@field_count is 0 for progressive, 1 or 2 for interlaced.
 @latest_daiy_jam reference is stolen from caller.
 
-Initializes @tc with the given values.</doc>
+Initializes @tc with the given values.
+The values are not checked for being in a valid range. To see if your
+timecode actually has valid content, use #gst_video_time_code_is_valid.</doc>
         <return-value transfer-ownership="none">
           <type name="none" c:type="void"/>
         </return-value>
@@ -10611,6 +10768,41 @@ Initializes @tc with the given values.</doc>
           </parameter>
         </parameters>
       </method>
+      <method name="init_from_date_time"
+              c:identifier="gst_video_time_code_init_from_date_time"
+              version="1.12">
+        <doc xml:space="preserve">The resulting config-&gt;latest_daily_jam is set to
+midnight, and timecode is set to the given time.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="tc" transfer-ownership="none">
+            <doc xml:space="preserve">a #GstVideoTimeCode</doc>
+            <type name="VideoTimeCode" c:type="GstVideoTimeCode*"/>
+          </instance-parameter>
+          <parameter name="fps_n" transfer-ownership="none">
+            <doc xml:space="preserve">Numerator of the frame rate</doc>
+            <type name="guint" c:type="guint"/>
+          </parameter>
+          <parameter name="fps_d" transfer-ownership="none">
+            <doc xml:space="preserve">Denominator of the frame rate</doc>
+            <type name="guint" c:type="guint"/>
+          </parameter>
+          <parameter name="dt" transfer-ownership="none">
+            <doc xml:space="preserve">#GDateTime to convert</doc>
+            <type name="GLib.DateTime" c:type="GDateTime*"/>
+          </parameter>
+          <parameter name="flags" transfer-ownership="none">
+            <doc xml:space="preserve">#GstVideoTimeCodeFlags</doc>
+            <type name="VideoTimeCodeFlags" c:type="GstVideoTimeCodeFlags"/>
+          </parameter>
+          <parameter name="field_count" transfer-ownership="none">
+            <doc xml:space="preserve">Interlaced video field count</doc>
+            <type name="guint" c:type="guint"/>
+          </parameter>
+        </parameters>
+      </method>
       <method name="is_valid"
               c:identifier="gst_video_time_code_is_valid"
               version="1.10">
@@ -10635,7 +10827,7 @@ hours/minutes/seconds/frames not overflowing)</doc>
         </return-value>
         <parameters>
           <instance-parameter name="tc" transfer-ownership="none">
-            <doc xml:space="preserve">a #GstVideoTimeCode</doc>
+            <doc xml:space="preserve">a valid #GstVideoTimeCode</doc>
             <type name="VideoTimeCode" c:type="const GstVideoTimeCode*"/>
           </instance-parameter>
         </parameters>
@@ -10650,7 +10842,7 @@ hours/minutes/seconds/frames not overflowing)</doc>
         </return-value>
         <parameters>
           <instance-parameter name="tc" transfer-ownership="none">
-            <doc xml:space="preserve">#GstVideoTimeCode to convert</doc>
+            <doc xml:space="preserve">A valid #GstVideoTimeCode to convert</doc>
             <type name="VideoTimeCode" c:type="const GstVideoTimeCode*"/>
           </instance-parameter>
         </parameters>
@@ -10724,6 +10916,151 @@ For drop frame, only 30000/1001 and 60000/1001 frame rates are supported.</doc>
         <doc xml:space="preserve">Whether we have interlaced video</doc>
       </member>
     </bitfield>
+    <record name="VideoTimeCodeInterval"
+            c:type="GstVideoTimeCodeInterval"
+            version="1.12"
+            glib:type-name="GstVideoTimeCodeInterval"
+            glib:get-type="gst_video_time_code_interval_get_type"
+            c:symbol-prefix="video_time_code_interval">
+      <doc xml:space="preserve">A representation of a difference between two #GstVideoTimeCode instances.
+Will not necessarily correspond to a real timecode (e.g. 00:00:10;00)</doc>
+      <field name="hours" writable="1">
+        <doc xml:space="preserve">the hours field of #GstVideoTimeCodeInterval</doc>
+        <type name="guint" c:type="guint"/>
+      </field>
+      <field name="minutes" writable="1">
+        <doc xml:space="preserve">the minutes field of #GstVideoTimeCodeInterval</doc>
+        <type name="guint" c:type="guint"/>
+      </field>
+      <field name="seconds" writable="1">
+        <doc xml:space="preserve">the seconds field of #GstVideoTimeCodeInterval</doc>
+        <type name="guint" c:type="guint"/>
+      </field>
+      <field name="frames" writable="1">
+        <doc xml:space="preserve">the frames field of #GstVideoTimeCodeInterval</doc>
+        <type name="guint" c:type="guint"/>
+      </field>
+      <constructor name="new"
+                   c:identifier="gst_video_time_code_interval_new"
+                   version="1.12">
+        <return-value transfer-ownership="full">
+          <doc xml:space="preserve">a new #GstVideoTimeCodeInterval with the given values.</doc>
+          <type name="VideoTimeCodeInterval"
+                c:type="GstVideoTimeCodeInterval*"/>
+        </return-value>
+        <parameters>
+          <parameter name="hours" transfer-ownership="none">
+            <doc xml:space="preserve">the hours field of #GstVideoTimeCodeInterval</doc>
+            <type name="guint" c:type="guint"/>
+          </parameter>
+          <parameter name="minutes" transfer-ownership="none">
+            <doc xml:space="preserve">the minutes field of #GstVideoTimeCodeInterval</doc>
+            <type name="guint" c:type="guint"/>
+          </parameter>
+          <parameter name="seconds" transfer-ownership="none">
+            <doc xml:space="preserve">the seconds field of #GstVideoTimeCodeInterval</doc>
+            <type name="guint" c:type="guint"/>
+          </parameter>
+          <parameter name="frames" transfer-ownership="none">
+            <doc xml:space="preserve">the frames field of #GstVideoTimeCodeInterval</doc>
+            <type name="guint" c:type="guint"/>
+          </parameter>
+        </parameters>
+      </constructor>
+      <constructor name="new_from_string"
+                   c:identifier="gst_video_time_code_interval_new_from_string"
+                   version="1.12">
+        <doc xml:space="preserve">@tc_inter_str must only have ":" as separators.</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:space="preserve">a new #GstVideoTimeCodeInterval from the given string</doc>
+          <type name="VideoTimeCodeInterval"
+                c:type="GstVideoTimeCodeInterval*"/>
+        </return-value>
+        <parameters>
+          <parameter name="tc_inter_str" transfer-ownership="none">
+            <doc xml:space="preserve">The string that represents the #GstVideoTimeCodeInterval</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </constructor>
+      <method name="clear"
+              c:identifier="gst_video_time_code_interval_clear"
+              version="1.12">
+        <doc xml:space="preserve">Initializes @tc with empty/zero/NULL values.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="tc" transfer-ownership="none">
+            <doc xml:space="preserve">a #GstVideoTimeCodeInterval</doc>
+            <type name="VideoTimeCodeInterval"
+                  c:type="GstVideoTimeCodeInterval*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="copy"
+              c:identifier="gst_video_time_code_interval_copy"
+              version="1.12">
+        <return-value transfer-ownership="full">
+          <doc xml:space="preserve">a new #GstVideoTimeCodeInterval with the same values as @tc .</doc>
+          <type name="VideoTimeCodeInterval"
+                c:type="GstVideoTimeCodeInterval*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="tc" transfer-ownership="none">
+            <doc xml:space="preserve">a #GstVideoTimeCodeInterval</doc>
+            <type name="VideoTimeCodeInterval"
+                  c:type="const GstVideoTimeCodeInterval*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="free"
+              c:identifier="gst_video_time_code_interval_free"
+              version="1.12">
+        <doc xml:space="preserve">Frees @tc .</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="tc" transfer-ownership="none">
+            <doc xml:space="preserve">a #GstVideoTimeCodeInterval</doc>
+            <type name="VideoTimeCodeInterval"
+                  c:type="GstVideoTimeCodeInterval*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="init"
+              c:identifier="gst_video_time_code_interval_init"
+              version="1.12">
+        <doc xml:space="preserve">Initializes @tc with the given values.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="tc" transfer-ownership="none">
+            <doc xml:space="preserve">a #GstVideoTimeCodeInterval</doc>
+            <type name="VideoTimeCodeInterval"
+                  c:type="GstVideoTimeCodeInterval*"/>
+          </instance-parameter>
+          <parameter name="hours" transfer-ownership="none">
+            <doc xml:space="preserve">the hours field of #GstVideoTimeCodeInterval</doc>
+            <type name="guint" c:type="guint"/>
+          </parameter>
+          <parameter name="minutes" transfer-ownership="none">
+            <doc xml:space="preserve">the minutes field of #GstVideoTimeCodeInterval</doc>
+            <type name="guint" c:type="guint"/>
+          </parameter>
+          <parameter name="seconds" transfer-ownership="none">
+            <doc xml:space="preserve">the seconds field of #GstVideoTimeCodeInterval</doc>
+            <type name="guint" c:type="guint"/>
+          </parameter>
+          <parameter name="frames" transfer-ownership="none">
+            <doc xml:space="preserve">the frames field of #GstVideoTimeCodeInterval</doc>
+            <type name="guint" c:type="guint"/>
+          </parameter>
+        </parameters>
+      </method>
+    </record>
     <record name="VideoTimeCodeMeta"
             c:type="GstVideoTimeCodeMeta"
             version="1.10">
@@ -11299,9 +11636,14 @@ associated command.</doc>
           <doc xml:space="preserve">A #GstEvent to inspect.</doc>
           <type name="Gst.Event" c:type="GstEvent*"/>
         </parameter>
-        <parameter name="command" transfer-ownership="none">
-          <doc xml:space="preserve">Pointer to GstNavigationCommand to receive the type of the
-navigation event.</doc>
+        <parameter name="command"
+                   direction="out"
+                   caller-allocates="0"
+                   transfer-ownership="full"
+                   optional="1"
+                   allow-none="1">
+          <doc xml:space="preserve">Pointer to GstNavigationCommand to receive the
+    type of the navigation event.</doc>
           <type name="NavigationCommand" c:type="GstNavigationCommand*"/>
         </parameter>
       </parameters>
@@ -11317,10 +11659,15 @@ navigation event.</doc>
           <doc xml:space="preserve">A #GstEvent to inspect.</doc>
           <type name="Gst.Event" c:type="GstEvent*"/>
         </parameter>
-        <parameter name="key" transfer-ownership="none">
-          <doc xml:space="preserve">A pointer to a location to receive the string identifying the key
-press. The returned string is owned by the event, and valid only until the
-event is unreffed.</doc>
+        <parameter name="key"
+                   direction="out"
+                   caller-allocates="0"
+                   transfer-ownership="none"
+                   optional="1"
+                   allow-none="1">
+          <doc xml:space="preserve">A pointer to a location to receive
+    the string identifying the key press. The returned string is owned by the
+    event, and valid only until the event is unreffed.</doc>
           <type name="utf8" c:type="const gchar**"/>
         </parameter>
       </parameters>
@@ -11341,19 +11688,34 @@ gst_navigation_event_get_type() to retrieve the #GstNavigationEventType.</doc>
           <doc xml:space="preserve">A #GstEvent to inspect.</doc>
           <type name="Gst.Event" c:type="GstEvent*"/>
         </parameter>
-        <parameter name="button" transfer-ownership="none">
-          <doc xml:space="preserve">Pointer to a gint that will receive the button number associated
-with the event.</doc>
+        <parameter name="button"
+                   direction="out"
+                   caller-allocates="0"
+                   transfer-ownership="full"
+                   optional="1"
+                   allow-none="1">
+          <doc xml:space="preserve">Pointer to a gint that will receive the button
+    number associated with the event.</doc>
           <type name="gint" c:type="gint*"/>
         </parameter>
-        <parameter name="x" transfer-ownership="none">
-          <doc xml:space="preserve">Pointer to a gdouble to receive the x coordinate of the mouse button
-event.</doc>
+        <parameter name="x"
+                   direction="out"
+                   caller-allocates="0"
+                   transfer-ownership="full"
+                   optional="1"
+                   allow-none="1">
+          <doc xml:space="preserve">Pointer to a gdouble to receive the x coordinate of the
+    mouse button event.</doc>
           <type name="gdouble" c:type="gdouble*"/>
         </parameter>
-        <parameter name="y" transfer-ownership="none">
-          <doc xml:space="preserve">Pointer to a gdouble to receive the y coordinate of the mouse button
-event.</doc>
+        <parameter name="y"
+                   direction="out"
+                   caller-allocates="0"
+                   transfer-ownership="full"
+                   optional="1"
+                   allow-none="1">
+          <doc xml:space="preserve">Pointer to a gdouble to receive the y coordinate of the
+    mouse button event.</doc>
           <type name="gdouble" c:type="gdouble*"/>
         </parameter>
       </parameters>
@@ -11372,12 +11734,24 @@ of the event.</doc>
           <doc xml:space="preserve">A #GstEvent to inspect.</doc>
           <type name="Gst.Event" c:type="GstEvent*"/>
         </parameter>
-        <parameter name="x" transfer-ownership="none">
-          <doc xml:space="preserve">Pointer to a gdouble to receive the x coordinate of the mouse movement.</doc>
+        <parameter name="x"
+                   direction="out"
+                   caller-allocates="0"
+                   transfer-ownership="full"
+                   optional="1"
+                   allow-none="1">
+          <doc xml:space="preserve">Pointer to a gdouble to receive the x coordinate of the
+    mouse movement.</doc>
           <type name="gdouble" c:type="gdouble*"/>
         </parameter>
-        <parameter name="y" transfer-ownership="none">
-          <doc xml:space="preserve">Pointer to a gdouble to receive the y coordinate of the mouse movement.</doc>
+        <parameter name="y"
+                   direction="out"
+                   caller-allocates="0"
+                   transfer-ownership="full"
+                   optional="1"
+                   allow-none="1">
+          <doc xml:space="preserve">Pointer to a gdouble to receive the y coordinate of the
+    mouse movement.</doc>
           <type name="gdouble" c:type="gdouble*"/>
         </parameter>
       </parameters>
@@ -11498,13 +11872,24 @@ and extract the @cur_angle and @n_angles parameters.</doc>
           <doc xml:space="preserve">A #GstMessage to inspect.</doc>
           <type name="Gst.Message" c:type="GstMessage*"/>
         </parameter>
-        <parameter name="cur_angle" transfer-ownership="none">
-          <doc xml:space="preserve">A pointer to a #guint to receive the new current angle number,
-or NULL</doc>
+        <parameter name="cur_angle"
+                   direction="out"
+                   caller-allocates="0"
+                   transfer-ownership="full"
+                   optional="1"
+                   allow-none="1">
+          <doc xml:space="preserve">A pointer to a #guint to receive the new
+    current angle number, or NULL</doc>
           <type name="guint" c:type="guint*"/>
         </parameter>
-        <parameter name="n_angles" transfer-ownership="none">
-          <doc xml:space="preserve">A pointer to a #guint to receive the new angle count, or NULL.</doc>
+        <parameter name="n_angles"
+                   direction="out"
+                   caller-allocates="0"
+                   transfer-ownership="full"
+                   optional="1"
+                   allow-none="1">
+          <doc xml:space="preserve">A pointer to a #guint to receive the new angle
+    count, or NULL.</doc>
           <type name="guint" c:type="guint*"/>
         </parameter>
       </parameters>
@@ -11528,9 +11913,11 @@ with it.</doc>
         <parameter name="event"
                    direction="out"
                    caller-allocates="0"
-                   transfer-ownership="full">
-          <doc xml:space="preserve">a pointer to a #GstEvent to receive the
-    contained navigation event.</doc>
+                   transfer-ownership="full"
+                   optional="1"
+                   allow-none="1">
+          <doc xml:space="preserve">a pointer to a #GstEvent to receive
+    the contained navigation event.</doc>
           <type name="Gst.Event" c:type="GstEvent**"/>
         </parameter>
       </parameters>
@@ -11550,9 +11937,14 @@ active, it indicates that the mouse is over a clickable area.</doc>
           <doc xml:space="preserve">A #GstMessage to inspect.</doc>
           <type name="Gst.Message" c:type="GstMessage*"/>
         </parameter>
-        <parameter name="active" transfer-ownership="none">
-          <doc xml:space="preserve">A pointer to a gboolean to receive the active/inactive state,
-or NULL.</doc>
+        <parameter name="active"
+                   direction="out"
+                   caller-allocates="0"
+                   transfer-ownership="full"
+                   optional="1"
+                   allow-none="1">
+          <doc xml:space="preserve">A pointer to a gboolean to receive the
+    active/inactive state, or NULL.</doc>
           <type name="gboolean" c:type="gboolean*"/>
         </parameter>
       </parameters>
@@ -11610,14 +12002,24 @@ angles into the #guint pointed to by the @n_angles variable.</doc>
           <doc xml:space="preserve">a #GstQuery</doc>
           <type name="Gst.Query" c:type="GstQuery*"/>
         </parameter>
-        <parameter name="cur_angle" transfer-ownership="none">
-          <doc xml:space="preserve">Pointer to a #guint into which to store the currently selected
-angle value from the query, or NULL</doc>
+        <parameter name="cur_angle"
+                   direction="out"
+                   caller-allocates="0"
+                   transfer-ownership="full"
+                   optional="1"
+                   allow-none="1">
+          <doc xml:space="preserve">Pointer to a #guint into which to store the
+    currently selected angle value from the query, or NULL</doc>
           <type name="guint" c:type="guint*"/>
         </parameter>
-        <parameter name="n_angles" transfer-ownership="none">
-          <doc xml:space="preserve">Pointer to a #guint into which to store the number of angles
-value from the query, or NULL</doc>
+        <parameter name="n_angles"
+                   direction="out"
+                   caller-allocates="0"
+                   transfer-ownership="full"
+                   optional="1"
+                   allow-none="1">
+          <doc xml:space="preserve">Pointer to a #guint into which to store the
+    number of angles value from the query, or NULL</doc>
           <type name="guint" c:type="guint*"/>
         </parameter>
       </parameters>
@@ -11638,7 +12040,9 @@ value from the query, or NULL</doc>
         <parameter name="n_cmds"
                    direction="out"
                    caller-allocates="0"
-                   transfer-ownership="full">
+                   transfer-ownership="full"
+                   optional="1"
+                   allow-none="1">
           <doc xml:space="preserve">the number of commands in this query.</doc>
           <type name="guint" c:type="guint*"/>
         </parameter>
@@ -11666,7 +12070,9 @@ set to #GST_NAVIGATION_COMMAND_INVALID.</doc>
         <parameter name="cmd"
                    direction="out"
                    caller-allocates="0"
-                   transfer-ownership="full">
+                   transfer-ownership="full"
+                   optional="1"
+                   allow-none="1">
           <doc xml:space="preserve">a pointer to store the nth command into.</doc>
           <type name="NavigationCommand" c:type="GstNavigationCommand*"/>
         </parameter>
@@ -11712,8 +12118,11 @@ of commands passed must be equal to @n_commands.</doc>
           <type name="gint" c:type="gint"/>
         </parameter>
         <parameter name="cmds" transfer-ownership="none">
-          <doc xml:space="preserve">An array containing @n_cmds @GstNavigationCommand values.</doc>
-          <type name="NavigationCommand" c:type="GstNavigationCommand*"/>
+          <doc xml:space="preserve">An array containing @n_cmds
+    @GstNavigationCommand values.</doc>
+          <array length="1" zero-terminated="0" c:type="GstNavigationCommand*">
+            <type name="NavigationCommand" c:type="GstNavigationCommand"/>
+          </array>
         </parameter>
       </parameters>
     </function>

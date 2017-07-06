@@ -16,6 +16,21 @@ and/or use gtk-doc annotations.  -->
              shared-library="libgstrtsp-1.0.so.0"
              c:identifier-prefixes="Gst"
              c:symbol-prefixes="gst">
+    <record name="RTSPAuthCredential"
+            c:type="GstRTSPAuthCredential"
+            glib:type-name="GstRTSPAuthCredential"
+            glib:get-type="gst_rtsp_auth_credential_get_type"
+            c:symbol-prefix="rtsp_auth_credential">
+      <field name="scheme" writable="1">
+        <type name="RTSPAuthMethod" c:type="GstRTSPAuthMethod"/>
+      </field>
+      <field name="params" writable="1">
+        <type name="RTSPAuthParam" c:type="GstRTSPAuthParam**"/>
+      </field>
+      <field name="authorization" writable="1">
+        <type name="utf8" c:type="gchar*"/>
+      </field>
+    </record>
     <enumeration name="RTSPAuthMethod"
                  glib:type-name="GstRTSPAuthMethod"
                  glib:get-type="gst_rtsp_auth_method_get_type"
@@ -40,6 +55,38 @@ and/or use gtk-doc annotations.  -->
         <doc xml:space="preserve">digest authentication</doc>
       </member>
     </enumeration>
+    <record name="RTSPAuthParam"
+            c:type="GstRTSPAuthParam"
+            glib:type-name="GstRTSPAuthParam"
+            glib:get-type="gst_rtsp_auth_param_get_type"
+            c:symbol-prefix="rtsp_auth_param">
+      <field name="name" writable="1">
+        <type name="utf8" c:type="gchar*"/>
+      </field>
+      <field name="value" writable="1">
+        <type name="utf8" c:type="gchar*"/>
+      </field>
+      <method name="copy" c:identifier="gst_rtsp_auth_param_copy">
+        <return-value transfer-ownership="full">
+          <type name="RTSPAuthParam" c:type="GstRTSPAuthParam*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="param" transfer-ownership="none">
+            <type name="RTSPAuthParam" c:type="GstRTSPAuthParam*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="free" c:identifier="gst_rtsp_auth_param_free">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="param" transfer-ownership="none">
+            <type name="RTSPAuthParam" c:type="GstRTSPAuthParam*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+    </record>
     <record name="RTSPConnection" c:type="GstRTSPConnection" disguised="1">
       <doc xml:space="preserve">This object manages the RTSP connection to the server. It provides function
 to receive and send bytes and messages.</doc>
@@ -864,12 +911,8 @@ read from @socket which should be used before starting to read new data.</doc>
                glib:type-name="GstRTSPExtension"
                glib:get-type="gst_rtsp_extension_get_type"
                glib:type-struct="RTSPExtensionInterface">
-      <doc xml:space="preserve">&lt;refsect2&gt;
-&lt;para&gt;
- This interface is implemented e.g. by the Windows Media Streaming RTSP
- exentension (rtspwms) and the RealMedia RTSP extension (rtspreal).
-&lt;/para&gt;
-&lt;/refsect2&gt;</doc>
+      <doc xml:space="preserve">This interface is implemented e.g. by the Windows Media Streaming RTSP
+ exentension (rtspwms) and the RealMedia RTSP extension (rtspreal).</doc>
       <virtual-method name="after_send" invoker="after_send">
         <return-value transfer-ownership="none">
           <type name="RTSPResult" c:type="GstRTSPResult"/>
@@ -2179,6 +2222,25 @@ response message.</doc>
                      allow-none="1">
             <doc xml:space="preserve">the request that triggered the response or %NULL</doc>
             <type name="RTSPMessage" c:type="const GstRTSPMessage*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="parse_auth_credentials"
+              c:identifier="gst_rtsp_message_parse_auth_credentials"
+              version="1.12">
+        <doc xml:space="preserve">Parses the credentials given in a WWW-Authenticate or Authorization header.</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:space="preserve">%NULL-terminated array of GstRTSPAuthCredential or %NULL.</doc>
+          <type name="RTSPAuthCredential" c:type="GstRTSPAuthCredential**"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="msg" transfer-ownership="none">
+            <doc xml:space="preserve">a #GstRTSPMessage</doc>
+            <type name="RTSPMessage" c:type="GstRTSPMessage*"/>
+          </instance-parameter>
+          <parameter name="field" transfer-ownership="none">
+            <doc xml:space="preserve">a #GstRTSPHeaderField</doc>
+            <type name="RTSPHeaderField" c:type="GstRTSPHeaderField"/>
           </parameter>
         </parameters>
       </method>
@@ -4298,6 +4360,21 @@ communication. Free with gst_rtsp_watch_unref () after usage.</doc>
       <doc xml:space="preserve">The default RTSP port to connect to.</doc>
       <type name="gint" c:type="gint"/>
     </constant>
+    <function name="rtsp_auth_credentials_free"
+              c:identifier="gst_rtsp_auth_credentials_free"
+              version="1.12">
+      <doc xml:space="preserve">Free a %NULL-terminated array of credentials returned from
+gst_rtsp_message_parse_auth_credentials().</doc>
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="credentials" transfer-ownership="none">
+          <doc xml:space="preserve">a %NULL-terminated array of #GstRTSPAuthCredential</doc>
+          <type name="RTSPAuthCredential" c:type="GstRTSPAuthCredential**"/>
+        </parameter>
+      </parameters>
+    </function>
     <function name="rtsp_connection_accept"
               c:identifier="gst_rtsp_connection_accept"
               moved-to="RTSPConnection.accept">
@@ -4415,6 +4492,51 @@ method is unknown.</doc>
       <parameters>
         <parameter name="method" transfer-ownership="none">
           <doc xml:space="preserve">a method</doc>
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="rtsp_generate_digest_auth_response"
+              c:identifier="gst_rtsp_generate_digest_auth_response"
+              version="1.12">
+      <doc xml:space="preserve">Calculates the digest auth response from the values given by the server and
+the username and password. See RFC2069 for details.
+
+Currently only supported algorithm "md5".</doc>
+      <return-value transfer-ownership="full">
+        <doc xml:space="preserve">Authentication response or %NULL if unsupported</doc>
+        <type name="utf8" c:type="gchar*"/>
+      </return-value>
+      <parameters>
+        <parameter name="algorithm"
+                   transfer-ownership="none"
+                   nullable="1"
+                   allow-none="1">
+          <doc xml:space="preserve">Hash algorithm to use, or %NULL for MD5</doc>
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+        <parameter name="method" transfer-ownership="none">
+          <doc xml:space="preserve">Request method, e.g. PLAY</doc>
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+        <parameter name="realm" transfer-ownership="none">
+          <doc xml:space="preserve">Realm</doc>
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+        <parameter name="username" transfer-ownership="none">
+          <doc xml:space="preserve">Username</doc>
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+        <parameter name="password" transfer-ownership="none">
+          <doc xml:space="preserve">Password</doc>
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+        <parameter name="uri" transfer-ownership="none">
+          <doc xml:space="preserve">Original request URI</doc>
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+        <parameter name="nonce" transfer-ownership="none">
+          <doc xml:space="preserve">Nonce</doc>
           <type name="utf8" c:type="const gchar*"/>
         </parameter>
       </parameters>

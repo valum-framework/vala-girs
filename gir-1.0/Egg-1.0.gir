@@ -22,6 +22,23 @@ and/or use gtk-doc annotations.  -->
            glib:type-name="EggAnimation"
            glib:get-type="egg_animation_get_type"
            glib:type-struct="AnimationClass">
+      <function name="calculate_duration"
+                c:identifier="egg_animation_calculate_duration">
+        <return-value transfer-ownership="none">
+          <type name="guint" c:type="guint"/>
+        </return-value>
+        <parameters>
+          <parameter name="monitor" transfer-ownership="none">
+            <type name="Gdk.Monitor" c:type="GdkMonitor*"/>
+          </parameter>
+          <parameter name="from_value" transfer-ownership="none">
+            <type name="gdouble" c:type="gdouble"/>
+          </parameter>
+          <parameter name="to_value" transfer-ownership="none">
+            <type name="gdouble" c:type="gdouble"/>
+          </parameter>
+        </parameters>
+      </function>
       <method name="add_property" c:identifier="egg_animation_add_property">
         <doc xml:space="preserve">Adds a new property to the set of properties to be animated during the
 lifetime of the animation.
@@ -106,7 +123,7 @@ offset in the animations duration.</doc>
                 writable="1"
                 construct-only="1"
                 transfer-ownership="none">
-        <doc xml:space="preserve">The "target" property is the #GObject that should have it's properties
+        <doc xml:space="preserve">The "target" property is the #GObject that should have its properties
 animated.</doc>
         <type name="GObject.Object"/>
       </property>
@@ -172,6 +189,15 @@ animated.</doc>
            glib:type-name="EggBindingGroup"
            glib:get-type="egg_binding_group_get_type"
            glib:type-struct="BindingGroupClass">
+      <doc xml:space="preserve">#EggBindingGroup manages to simplify the process of binding
+many properties from a #GObject as a group. As such there is no API
+to unbind a property from the group.
+
+In particular, this allows you to change the source instance for the
+bindings. This automatically causes the unbinding of the properties
+from the old instance and binding to the new instance.
+
+This should not be confused with #GtkBindingGroup.</doc>
       <constructor name="new" c:identifier="egg_binding_group_new">
         <doc xml:space="preserve">Creates a new #EggBindingGroup.</doc>
         <return-value transfer-ownership="full">
@@ -457,6 +483,13 @@ Note: All properties that have been bound must exist on @source.</doc>
            glib:type-name="EggCenteringBin"
            glib:get-type="egg_centering_bin_get_type"
            glib:type-struct="CenteringBinClass">
+      <doc xml:space="preserve">First off, you probably want to use GtkBox with a center widget instead
+of this widget. However, the case where this widget is useful is when
+you cannot control your layout within the width of the toplevel, but
+still want your child centered within the toplevel.
+
+This is done by translating coordinates of the widget with respect to
+the toplevel and anchoring the child at TRUE_CENTER-(alloc.width/2).</doc>
       <implements name="Atk.ImplementorIface"/>
       <implements name="Gtk.Buildable"/>
       <constructor name="new" c:identifier="egg_centering_bin_new">
@@ -763,6 +796,43 @@ Note: All properties that have been bound must exist on @source.</doc>
         </array>
       </field>
     </record>
+    <class name="ElasticBin"
+           c:symbol-prefix="elastic_bin"
+           c:type="EggElasticBin"
+           parent="Gtk.Bin"
+           glib:type-name="EggElasticBin"
+           glib:get-type="egg_elastic_bin_get_type"
+           glib:type-struct="ElasticBinClass">
+      <implements name="Atk.ImplementorIface"/>
+      <implements name="Gtk.Buildable"/>
+      <constructor name="new" c:identifier="egg_elastic_bin_new">
+        <return-value transfer-ownership="none">
+          <type name="Gtk.Widget" c:type="GtkWidget*"/>
+        </return-value>
+      </constructor>
+      <field name="parent_instance">
+        <type name="Gtk.Bin" c:type="GtkBin"/>
+      </field>
+    </class>
+    <record name="ElasticBinClass"
+            c:type="EggElasticBinClass"
+            glib:is-gtype-struct-for="ElasticBin">
+      <field name="parent_class">
+        <type name="Gtk.BinClass" c:type="GtkBinClass"/>
+      </field>
+      <field name="_reserved1">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+      <field name="_reserved2">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+      <field name="_reserved3">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+      <field name="_reserved4">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+    </record>
     <class name="EmptyState"
            c:symbol-prefix="empty_state"
            c:type="EggEmptyState"
@@ -1020,11 +1090,55 @@ Note: All properties that have been bound must exist on @source.</doc>
             glib:type-name="EggHeap"
             glib:get-type="egg_heap_get_type"
             c:symbol-prefix="heap">
+      <doc xml:space="preserve">Heaps are similar to a partially sorted tree but implemented as an
+array. They allow for efficient O(1) lookup of the highest priority
+item as it will always be the first item of the array.
+
+To create a new heap use egg_heap_new().
+
+To add items to the heap, use egg_heap_insert_val() or
+egg_heap_insert_vals() to insert in bulk.
+
+To access an item in the heap, use egg_heap_index().
+
+To remove an arbitrary item from the heap, use egg_heap_extract_index().
+
+To remove the highest priority item in the heap, use egg_heap_extract().
+
+To free a heap, use egg_heap_unref().
+
+Here is an example that stores integers in a #EggHeap:
+|[&lt;!-- language="C" --&gt;
+static int
+cmpint (gconstpointer a,
+        gconstpointer b)
+{
+  return *(const gint *)a - *(const gint *)b;
+}
+
+int
+main (gint   argc,
+      gchar *argv[])
+{
+  EggHeap *heap;
+  gint i;
+  gint v;
+
+  heap = egg_heap_new (sizeof (gint), cmpint);
+
+  for (i = 0; i &lt; 10000; i++)
+    egg_heap_insert_val (heap, i);
+  for (i = 0; i &lt; 10000; i++)
+    egg_heap_extract (heap, &amp;v);
+
+  egg_heap_unref (heap);
+}
+]|</doc>
       <field name="data" writable="1">
         <type name="utf8" c:type="gchar*"/>
       </field>
       <field name="len" writable="1">
-        <type name="guint" c:type="guint"/>
+        <type name="gsize" c:type="gsize"/>
       </field>
       <constructor name="new" c:identifier="egg_heap_new">
         <doc xml:space="preserve">Creates a new #EggHeap. A heap is a tree-like structure stored in
@@ -1073,7 +1187,7 @@ a priority queue.</doc>
             <type name="Heap" c:type="EggHeap*"/>
           </instance-parameter>
           <parameter name="index_" transfer-ownership="none">
-            <type name="guint" c:type="guint"/>
+            <type name="gsize" c:type="gsize"/>
           </parameter>
           <parameter name="result"
                      transfer-ownership="none"
@@ -1245,6 +1359,24 @@ when the reference count reaches zero.</doc>
            glib:type-name="EggMenuManager"
            glib:get-type="egg_menu_manager_get_type"
            glib:type-struct="MenuManagerClass">
+      <doc xml:space="preserve">The goal of #EggMenuManager is to simplify the process of merging multiple
+GtkBuilder .ui files containing menus into a single representation of the
+application menus. Additionally, it provides the ability to "unmerge"
+previously merged menus.
+
+This allows for an application to have plugins which seemlessly extends
+the core application menus.
+
+Implementation notes:
+
+To make this work, we don't use the GMenu instances created by a GtkBuilder
+instance. Instead, we create the menus ourself and recreate section and
+submenu links. This allows the #EggMenuManager to be in full control of
+the generated menus.
+
+egg_menu_manager_get_menu_by_id() will always return a #GMenu, however
+that menu may contain no children until something has extended it later
+on during the application process.</doc>
       <constructor name="new" c:identifier="egg_menu_manager_new">
         <return-value transfer-ownership="full">
           <type name="MenuManager" c:type="EggMenuManager*"/>
@@ -1376,6 +1508,7 @@ when the reference count reaches zero.</doc>
            glib:type-name="EggPriorityBox"
            glib:get-type="egg_priority_box_get_type"
            glib:type-struct="PriorityBoxClass">
+      <doc xml:space="preserve">This is like a #GtkBox but uses stable priorities to sort.</doc>
       <implements name="Atk.ImplementorIface"/>
       <implements name="Gtk.Buildable"/>
       <implements name="Gtk.Orientable"/>
@@ -1393,6 +1526,101 @@ when the reference count reaches zero.</doc>
             glib:is-gtype-struct-for="PriorityBox">
       <field name="parent_class">
         <type name="Gtk.BoxClass" c:type="GtkBoxClass"/>
+      </field>
+      <field name="_reserved1">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+      <field name="_reserved2">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+      <field name="_reserved3">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+      <field name="_reserved4">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+    </record>
+    <class name="ProgressButton"
+           c:symbol-prefix="progress_button"
+           c:type="EggProgressButton"
+           parent="Gtk.Button"
+           glib:type-name="EggProgressButton"
+           glib:get-type="egg_progress_button_get_type"
+           glib:type-struct="ProgressButtonClass">
+      <implements name="Atk.ImplementorIface"/>
+      <implements name="Gtk.Actionable"/>
+      <implements name="Gtk.Activatable"/>
+      <implements name="Gtk.Buildable"/>
+      <constructor name="new" c:identifier="egg_progress_button_new">
+        <return-value transfer-ownership="none">
+          <type name="Gtk.Widget" c:type="GtkWidget*"/>
+        </return-value>
+      </constructor>
+      <method name="get_progress"
+              c:identifier="egg_progress_button_get_progress">
+        <return-value transfer-ownership="none">
+          <type name="guint" c:type="guint"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="ProgressButton" c:type="EggProgressButton*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_show_progress"
+              c:identifier="egg_progress_button_get_show_progress">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="ProgressButton" c:type="EggProgressButton*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="set_progress"
+              c:identifier="egg_progress_button_set_progress">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="button" transfer-ownership="none">
+            <type name="ProgressButton" c:type="EggProgressButton*"/>
+          </instance-parameter>
+          <parameter name="percentage" transfer-ownership="none">
+            <type name="guint" c:type="guint"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_show_progress"
+              c:identifier="egg_progress_button_set_show_progress">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="button" transfer-ownership="none">
+            <type name="ProgressButton" c:type="EggProgressButton*"/>
+          </instance-parameter>
+          <parameter name="show_progress" transfer-ownership="none">
+            <type name="gboolean" c:type="gboolean"/>
+          </parameter>
+        </parameters>
+      </method>
+      <property name="progress" writable="1" transfer-ownership="none">
+        <type name="guint" c:type="guint"/>
+      </property>
+      <property name="show-progress" writable="1" transfer-ownership="none">
+        <type name="gboolean" c:type="gboolean"/>
+      </property>
+      <field name="parent_instance">
+        <type name="Gtk.Button" c:type="GtkButton"/>
+      </field>
+    </class>
+    <record name="ProgressButtonClass"
+            c:type="EggProgressButtonClass"
+            glib:is-gtype-struct-for="ProgressButton">
+      <field name="parent_class">
+        <type name="Gtk.ButtonClass" c:type="GtkButtonClass"/>
       </field>
       <field name="_reserved1">
         <type name="gpointer" c:type="gpointer"/>
@@ -2038,6 +2266,24 @@ from the resolved value via the settings sandwich.</doc>
            glib:type-name="EggSignalGroup"
            glib:get-type="egg_signal_group_get_type"
            glib:type-struct="SignalGroupClass">
+      <doc xml:space="preserve">#EggSignalGroup manages to simplify the process of connecting
+many signals to a #GObject as a group. As such there is no API
+to disconnect a signal from the group.
+
+In particular, this allows you to:
+
+ - Change the target instance, which automatically causes disconnection
+   of the signals from the old instance and connecting to the new instance.
+ - Block and unblock signals as a group
+ - Ensuring that blocked state transfers across target instances.
+
+One place you might want to use such a structure is with #GtkTextView and
+#GtkTextBuffer. Often times, you'll need to connect to many signals on
+#GtkTextBuffer from a #GtkTextView subclass. This allows you to create a
+signal group during instance construction, simply bind the
+#GtkTextView:buffer property to #EggSignalGroup:target and connect
+all the signals you need. When the #GtkTextView:buffer property changes
+all of the signals will be transitioned correctly.</doc>
       <constructor name="new" c:identifier="egg_signal_group_new">
         <doc xml:space="preserve">Creates a new #EggSignalGroup for target instances of @target_type.</doc>
         <return-value transfer-ownership="full">
@@ -3128,6 +3374,902 @@ the last state before the cycle was detected.</doc>
         <type name="GObject.ObjectClass" c:type="GObjectClass"/>
       </field>
     </record>
+    <class name="Suggestion"
+           c:symbol-prefix="suggestion"
+           c:type="EggSuggestion"
+           parent="GObject.Object"
+           glib:type-name="EggSuggestion"
+           glib:get-type="egg_suggestion_get_type"
+           glib:type-struct="SuggestionClass">
+      <constructor name="new" c:identifier="egg_suggestion_new">
+        <return-value transfer-ownership="full">
+          <type name="Suggestion" c:type="EggSuggestion*"/>
+        </return-value>
+      </constructor>
+      <virtual-method name="replace_typed_text" invoker="replace_typed_text">
+        <doc xml:space="preserve">This function is meant to be used to replace the text in the entry with text
+that represents the suggestion most accurately. This happens when the user
+presses tab while typing a suggestion. For example, if typing "gno" in the
+entry, you might have a suggest_suffix of "me.org" so that the user sees
+"gnome.org". But the replace_typed_text might include more data such as
+"https://gnome.org" as it more closely represents the suggestion.</doc>
+        <return-value transfer-ownership="full" nullable="1">
+          <doc xml:space="preserve">The replacement text to insert into
+  the entry when "tab" is pressed to complete the insertion.</doc>
+          <type name="utf8" c:type="gchar*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <doc xml:space="preserve">An #EggSuggestion</doc>
+            <type name="Suggestion" c:type="EggSuggestion*"/>
+          </instance-parameter>
+          <parameter name="typed_text" transfer-ownership="none">
+            <doc xml:space="preserve">the text that was typed into the entry</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="suggest_suffix" invoker="suggest_suffix">
+        <doc xml:space="preserve">This function requests potential text to append to @typed_text to make it
+more clear to the user what they will be activating by selecting this
+suggestion. For example, if they start typing "gno", a potential suggested
+suffix might be "me.org" to create "gnome.org".</doc>
+        <return-value transfer-ownership="full" nullable="1">
+          <doc xml:space="preserve">Suffix to append to @typed_text
+  or %NULL to leave it unchanged.</doc>
+          <type name="utf8" c:type="gchar*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <doc xml:space="preserve">a #EggSuggestion</doc>
+            <type name="Suggestion" c:type="EggSuggestion*"/>
+          </instance-parameter>
+          <parameter name="typed_text" transfer-ownership="none">
+            <doc xml:space="preserve">The user entered text</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <method name="get_icon_name" c:identifier="egg_suggestion_get_icon_name">
+        <return-value transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="Suggestion" c:type="EggSuggestion*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_id" c:identifier="egg_suggestion_get_id">
+        <return-value transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="Suggestion" c:type="EggSuggestion*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_subtitle" c:identifier="egg_suggestion_get_subtitle">
+        <return-value transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="Suggestion" c:type="EggSuggestion*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_title" c:identifier="egg_suggestion_get_title">
+        <return-value transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="Suggestion" c:type="EggSuggestion*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="replace_typed_text"
+              c:identifier="egg_suggestion_replace_typed_text">
+        <doc xml:space="preserve">This function is meant to be used to replace the text in the entry with text
+that represents the suggestion most accurately. This happens when the user
+presses tab while typing a suggestion. For example, if typing "gno" in the
+entry, you might have a suggest_suffix of "me.org" so that the user sees
+"gnome.org". But the replace_typed_text might include more data such as
+"https://gnome.org" as it more closely represents the suggestion.</doc>
+        <return-value transfer-ownership="full" nullable="1">
+          <doc xml:space="preserve">The replacement text to insert into
+  the entry when "tab" is pressed to complete the insertion.</doc>
+          <type name="utf8" c:type="gchar*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <doc xml:space="preserve">An #EggSuggestion</doc>
+            <type name="Suggestion" c:type="EggSuggestion*"/>
+          </instance-parameter>
+          <parameter name="typed_text" transfer-ownership="none">
+            <doc xml:space="preserve">the text that was typed into the entry</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_icon_name" c:identifier="egg_suggestion_set_icon_name">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="Suggestion" c:type="EggSuggestion*"/>
+          </instance-parameter>
+          <parameter name="icon_name" transfer-ownership="none">
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_id" c:identifier="egg_suggestion_set_id">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="Suggestion" c:type="EggSuggestion*"/>
+          </instance-parameter>
+          <parameter name="id" transfer-ownership="none">
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_subtitle" c:identifier="egg_suggestion_set_subtitle">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="Suggestion" c:type="EggSuggestion*"/>
+          </instance-parameter>
+          <parameter name="subtitle" transfer-ownership="none">
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_title" c:identifier="egg_suggestion_set_title">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="Suggestion" c:type="EggSuggestion*"/>
+          </instance-parameter>
+          <parameter name="title" transfer-ownership="none">
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="suggest_suffix"
+              c:identifier="egg_suggestion_suggest_suffix">
+        <doc xml:space="preserve">This function requests potential text to append to @typed_text to make it
+more clear to the user what they will be activating by selecting this
+suggestion. For example, if they start typing "gno", a potential suggested
+suffix might be "me.org" to create "gnome.org".</doc>
+        <return-value transfer-ownership="full" nullable="1">
+          <doc xml:space="preserve">Suffix to append to @typed_text
+  or %NULL to leave it unchanged.</doc>
+          <type name="utf8" c:type="gchar*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <doc xml:space="preserve">a #EggSuggestion</doc>
+            <type name="Suggestion" c:type="EggSuggestion*"/>
+          </instance-parameter>
+          <parameter name="typed_text" transfer-ownership="none">
+            <doc xml:space="preserve">The user entered text</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <property name="icon-name" writable="1" transfer-ownership="none">
+        <type name="utf8" c:type="gchar*"/>
+      </property>
+      <property name="id" writable="1" transfer-ownership="none">
+        <type name="utf8" c:type="gchar*"/>
+      </property>
+      <property name="subtitle" writable="1" transfer-ownership="none">
+        <type name="utf8" c:type="gchar*"/>
+      </property>
+      <property name="title" writable="1" transfer-ownership="none">
+        <type name="utf8" c:type="gchar*"/>
+      </property>
+      <field name="parent_instance">
+        <type name="GObject.Object" c:type="GObject"/>
+      </field>
+      <glib:signal name="replace-typed-text" when="last">
+        <return-value transfer-ownership="full">
+          <type name="utf8" c:type="gchar*"/>
+        </return-value>
+        <parameters>
+          <parameter name="object" transfer-ownership="none">
+            <type name="utf8" c:type="gchar*"/>
+          </parameter>
+        </parameters>
+      </glib:signal>
+      <glib:signal name="suggest-suffix" when="last">
+        <return-value transfer-ownership="full">
+          <type name="utf8" c:type="gchar*"/>
+        </return-value>
+        <parameters>
+          <parameter name="object" transfer-ownership="none">
+            <type name="utf8" c:type="gchar*"/>
+          </parameter>
+        </parameters>
+      </glib:signal>
+    </class>
+    <record name="SuggestionClass"
+            c:type="EggSuggestionClass"
+            glib:is-gtype-struct-for="Suggestion">
+      <field name="parent_class">
+        <type name="GObject.ObjectClass" c:type="GObjectClass"/>
+      </field>
+      <field name="suggest_suffix">
+        <callback name="suggest_suffix">
+          <return-value transfer-ownership="full" nullable="1">
+            <doc xml:space="preserve">Suffix to append to @typed_text
+  or %NULL to leave it unchanged.</doc>
+            <type name="utf8" c:type="gchar*"/>
+          </return-value>
+          <parameters>
+            <parameter name="self" transfer-ownership="none">
+              <doc xml:space="preserve">a #EggSuggestion</doc>
+              <type name="Suggestion" c:type="EggSuggestion*"/>
+            </parameter>
+            <parameter name="typed_text" transfer-ownership="none">
+              <doc xml:space="preserve">The user entered text</doc>
+              <type name="utf8" c:type="const gchar*"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="replace_typed_text">
+        <callback name="replace_typed_text">
+          <return-value transfer-ownership="full" nullable="1">
+            <doc xml:space="preserve">The replacement text to insert into
+  the entry when "tab" is pressed to complete the insertion.</doc>
+            <type name="utf8" c:type="gchar*"/>
+          </return-value>
+          <parameters>
+            <parameter name="self" transfer-ownership="none">
+              <doc xml:space="preserve">An #EggSuggestion</doc>
+              <type name="Suggestion" c:type="EggSuggestion*"/>
+            </parameter>
+            <parameter name="typed_text" transfer-ownership="none">
+              <doc xml:space="preserve">the text that was typed into the entry</doc>
+              <type name="utf8" c:type="const gchar*"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="_reserved1">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+      <field name="_reserved2">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+      <field name="_reserved3">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+      <field name="_reserved4">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+    </record>
+    <class name="SuggestionEntry"
+           c:symbol-prefix="suggestion_entry"
+           c:type="EggSuggestionEntry"
+           parent="Gtk.Entry"
+           glib:type-name="EggSuggestionEntry"
+           glib:get-type="egg_suggestion_entry_get_type"
+           glib:type-struct="SuggestionEntryClass">
+      <implements name="Atk.ImplementorIface"/>
+      <implements name="Gtk.Buildable"/>
+      <implements name="Gtk.CellEditable"/>
+      <implements name="Gtk.Editable"/>
+      <constructor name="new" c:identifier="egg_suggestion_entry_new">
+        <return-value transfer-ownership="none">
+          <type name="Gtk.Widget" c:type="GtkWidget*"/>
+        </return-value>
+      </constructor>
+      <virtual-method name="hide_suggestions">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="SuggestionEntry" c:type="EggSuggestionEntry*"/>
+          </instance-parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="move_suggestion">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="SuggestionEntry" c:type="EggSuggestionEntry*"/>
+          </instance-parameter>
+          <parameter name="amount" transfer-ownership="none">
+            <type name="gint" c:type="gint"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="show_suggestions">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="SuggestionEntry" c:type="EggSuggestionEntry*"/>
+          </instance-parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="suggestion_activated">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="SuggestionEntry" c:type="EggSuggestionEntry*"/>
+          </instance-parameter>
+          <parameter name="suggestion" transfer-ownership="none">
+            <type name="Suggestion" c:type="EggSuggestion*"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <method name="get_model" c:identifier="egg_suggestion_entry_get_model">
+        <doc xml:space="preserve">Gets the model being visualized.</doc>
+        <return-value transfer-ownership="none" nullable="1">
+          <doc xml:space="preserve">A #GListModel or %NULL.</doc>
+          <type name="Gio.ListModel" c:type="GListModel*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <doc xml:space="preserve">a #EggSuggestionEntry</doc>
+            <type name="SuggestionEntry" c:type="EggSuggestionEntry*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_suggestion"
+              c:identifier="egg_suggestion_entry_get_suggestion">
+        <doc xml:space="preserve">Gets the currently selected suggestion.</doc>
+        <return-value transfer-ownership="none" nullable="1">
+          <doc xml:space="preserve">An #EggSuggestion or %NULL.</doc>
+          <type name="Suggestion" c:type="EggSuggestion*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <doc xml:space="preserve">a #EggSuggestionEntry</doc>
+            <type name="SuggestionEntry" c:type="EggSuggestionEntry*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_typed_text"
+              c:identifier="egg_suggestion_entry_get_typed_text">
+        <return-value transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="SuggestionEntry" c:type="EggSuggestionEntry*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="set_model" c:identifier="egg_suggestion_entry_set_model">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="SuggestionEntry" c:type="EggSuggestionEntry*"/>
+          </instance-parameter>
+          <parameter name="model" transfer-ownership="none">
+            <type name="Gio.ListModel" c:type="GListModel*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_suggestion"
+              c:identifier="egg_suggestion_entry_set_suggestion">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="SuggestionEntry" c:type="EggSuggestionEntry*"/>
+          </instance-parameter>
+          <parameter name="suggestion" transfer-ownership="none">
+            <type name="Suggestion" c:type="EggSuggestion*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <property name="model" writable="1" transfer-ownership="none">
+        <type name="Gio.ListModel"/>
+      </property>
+      <property name="typed-text" transfer-ownership="none">
+        <type name="utf8" c:type="gchar*"/>
+      </property>
+      <field name="parent_instance">
+        <type name="Gtk.Entry" c:type="GtkEntry"/>
+      </field>
+      <glib:signal name="activate-suggestion" when="last" action="1">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+      </glib:signal>
+      <glib:signal name="hide-suggestions" when="last" action="1">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+      </glib:signal>
+      <glib:signal name="move-suggestion" when="last" action="1">
+        <doc xml:space="preserve">This moves the selected suggestion in the popover by the value
+provided. -1 moves up one row, 1, moves down a row.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="amount" transfer-ownership="none">
+            <doc xml:space="preserve">The number of items to move</doc>
+            <type name="gint" c:type="gint"/>
+          </parameter>
+        </parameters>
+      </glib:signal>
+      <glib:signal name="show-suggestions" when="last" action="1">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+      </glib:signal>
+      <glib:signal name="suggestion-activated" when="last">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="object" transfer-ownership="none">
+            <type name="Suggestion"/>
+          </parameter>
+        </parameters>
+      </glib:signal>
+    </class>
+    <class name="SuggestionEntryBuffer"
+           c:symbol-prefix="suggestion_entry_buffer"
+           c:type="EggSuggestionEntryBuffer"
+           parent="Gtk.EntryBuffer"
+           glib:type-name="EggSuggestionEntryBuffer"
+           glib:get-type="egg_suggestion_entry_buffer_get_type"
+           glib:type-struct="SuggestionEntryBufferClass">
+      <constructor name="new" c:identifier="egg_suggestion_entry_buffer_new">
+        <return-value transfer-ownership="full">
+          <type name="SuggestionEntryBuffer"
+                c:type="EggSuggestionEntryBuffer*"/>
+        </return-value>
+      </constructor>
+      <method name="commit" c:identifier="egg_suggestion_entry_buffer_commit">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="SuggestionEntryBuffer"
+                  c:type="EggSuggestionEntryBuffer*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_suggestion"
+              c:identifier="egg_suggestion_entry_buffer_get_suggestion">
+        <doc xml:space="preserve">Gets the #EggSuggestion that is the current "preview suffix" of the
+text in the entry.</doc>
+        <return-value transfer-ownership="none" nullable="1">
+          <doc xml:space="preserve">An #EggSuggestion or %NULL.</doc>
+          <type name="Suggestion" c:type="EggSuggestion*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <doc xml:space="preserve">a #EggSuggestionEntryBuffer</doc>
+            <type name="SuggestionEntryBuffer"
+                  c:type="EggSuggestionEntryBuffer*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_typed_length"
+              c:identifier="egg_suggestion_entry_buffer_get_typed_length">
+        <return-value transfer-ownership="none">
+          <type name="guint" c:type="guint"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="SuggestionEntryBuffer"
+                  c:type="EggSuggestionEntryBuffer*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_typed_text"
+              c:identifier="egg_suggestion_entry_buffer_get_typed_text">
+        <return-value transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="SuggestionEntryBuffer"
+                  c:type="EggSuggestionEntryBuffer*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="set_suggestion"
+              c:identifier="egg_suggestion_entry_buffer_set_suggestion">
+        <doc xml:space="preserve">Sets the current suggestion for the entry buffer.
+
+The suggestion is used to get a potential suffix for the current entry
+text. This allows the entry to show "preview text" after the entered
+text for what might be inserted should they activate the current item.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <doc xml:space="preserve">a #EggSuggestionEntryBuffer</doc>
+            <type name="SuggestionEntryBuffer"
+                  c:type="EggSuggestionEntryBuffer*"/>
+          </instance-parameter>
+          <parameter name="suggestion"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <doc xml:space="preserve">An #EggSuggestion or %NULL</doc>
+            <type name="Suggestion" c:type="EggSuggestion*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <property name="suggestion" writable="1" transfer-ownership="none">
+        <type name="Suggestion"/>
+      </property>
+      <field name="parent_instance">
+        <type name="Gtk.EntryBuffer" c:type="GtkEntryBuffer"/>
+      </field>
+    </class>
+    <record name="SuggestionEntryBufferClass"
+            c:type="EggSuggestionEntryBufferClass"
+            glib:is-gtype-struct-for="SuggestionEntryBuffer">
+      <field name="parent_class">
+        <type name="Gtk.EntryBufferClass" c:type="GtkEntryBufferClass"/>
+      </field>
+      <field name="_reserved1">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+      <field name="_reserved2">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+      <field name="_reserved3">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+      <field name="_reserved4">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+    </record>
+    <record name="SuggestionEntryClass"
+            c:type="EggSuggestionEntryClass"
+            glib:is-gtype-struct-for="SuggestionEntry">
+      <field name="parent_class">
+        <type name="Gtk.EntryClass" c:type="GtkEntryClass"/>
+      </field>
+      <field name="hide_suggestions">
+        <callback name="hide_suggestions">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+          <parameters>
+            <parameter name="self" transfer-ownership="none">
+              <type name="SuggestionEntry" c:type="EggSuggestionEntry*"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="show_suggestions">
+        <callback name="show_suggestions">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+          <parameters>
+            <parameter name="self" transfer-ownership="none">
+              <type name="SuggestionEntry" c:type="EggSuggestionEntry*"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="move_suggestion">
+        <callback name="move_suggestion">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+          <parameters>
+            <parameter name="self" transfer-ownership="none">
+              <type name="SuggestionEntry" c:type="EggSuggestionEntry*"/>
+            </parameter>
+            <parameter name="amount" transfer-ownership="none">
+              <type name="gint" c:type="gint"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="suggestion_activated">
+        <callback name="suggestion_activated">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+          <parameters>
+            <parameter name="self" transfer-ownership="none">
+              <type name="SuggestionEntry" c:type="EggSuggestionEntry*"/>
+            </parameter>
+            <parameter name="suggestion" transfer-ownership="none">
+              <type name="Suggestion" c:type="EggSuggestion*"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="_reserved1">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+      <field name="_reserved2">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+      <field name="_reserved3">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+      <field name="_reserved4">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+      <field name="_reserved5">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+      <field name="_reserved6">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+      <field name="_reserved7">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+      <field name="_reserved8">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+    </record>
+    <class name="SuggestionPopover"
+           c:symbol-prefix="suggestion_popover"
+           c:type="EggSuggestionPopover"
+           parent="Gtk.Window"
+           glib:type-name="EggSuggestionPopover"
+           glib:get-type="egg_suggestion_popover_get_type"
+           glib:type-struct="SuggestionPopoverClass">
+      <implements name="Atk.ImplementorIface"/>
+      <implements name="Gtk.Buildable"/>
+      <constructor name="new" c:identifier="egg_suggestion_popover_new">
+        <return-value transfer-ownership="none">
+          <type name="Gtk.Widget" c:type="GtkWidget*"/>
+        </return-value>
+      </constructor>
+      <method name="activate_selected"
+              c:identifier="egg_suggestion_popover_activate_selected">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="SuggestionPopover" c:type="EggSuggestionPopover*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_model" c:identifier="egg_suggestion_popover_get_model">
+        <doc xml:space="preserve">Gets the model being visualized.</doc>
+        <return-value transfer-ownership="none" nullable="1">
+          <doc xml:space="preserve">A #GListModel or %NULL.</doc>
+          <type name="Gio.ListModel" c:type="GListModel*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <doc xml:space="preserve">a #EggSuggestionPopover</doc>
+            <type name="SuggestionPopover" c:type="EggSuggestionPopover*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_relative_to"
+              c:identifier="egg_suggestion_popover_get_relative_to">
+        <return-value transfer-ownership="none" nullable="1">
+          <doc xml:space="preserve">A #GtkWidget or %NULL.</doc>
+          <type name="Gtk.Widget" c:type="GtkWidget*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <doc xml:space="preserve">a #EggSuggestionPopover</doc>
+            <type name="SuggestionPopover" c:type="EggSuggestionPopover*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_selected"
+              c:identifier="egg_suggestion_popover_get_selected">
+        <doc xml:space="preserve">Gets the currently selected suggestion.</doc>
+        <return-value transfer-ownership="none" nullable="1">
+          <doc xml:space="preserve">An #EggSuggestion or %NULL.</doc>
+          <type name="Suggestion" c:type="EggSuggestion*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <doc xml:space="preserve">a #EggSuggestionPopover</doc>
+            <type name="SuggestionPopover" c:type="EggSuggestionPopover*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="move_by" c:identifier="egg_suggestion_popover_move_by">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="SuggestionPopover" c:type="EggSuggestionPopover*"/>
+          </instance-parameter>
+          <parameter name="amount" transfer-ownership="none">
+            <type name="gint" c:type="gint"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="popdown" c:identifier="egg_suggestion_popover_popdown">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="SuggestionPopover" c:type="EggSuggestionPopover*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="popup" c:identifier="egg_suggestion_popover_popup">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="SuggestionPopover" c:type="EggSuggestionPopover*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="set_model" c:identifier="egg_suggestion_popover_set_model">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="SuggestionPopover" c:type="EggSuggestionPopover*"/>
+          </instance-parameter>
+          <parameter name="model" transfer-ownership="none">
+            <type name="Gio.ListModel" c:type="GListModel*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_relative_to"
+              c:identifier="egg_suggestion_popover_set_relative_to">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="SuggestionPopover" c:type="EggSuggestionPopover*"/>
+          </instance-parameter>
+          <parameter name="widget" transfer-ownership="none">
+            <type name="Gtk.Widget" c:type="GtkWidget*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_selected"
+              c:identifier="egg_suggestion_popover_set_selected">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="SuggestionPopover" c:type="EggSuggestionPopover*"/>
+          </instance-parameter>
+          <parameter name="suggestion" transfer-ownership="none">
+            <type name="Suggestion" c:type="EggSuggestion*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <property name="model" writable="1" transfer-ownership="none">
+        <type name="Suggestion"/>
+      </property>
+      <property name="relative-to" writable="1" transfer-ownership="none">
+        <type name="Gtk.Widget"/>
+      </property>
+      <property name="selected" writable="1" transfer-ownership="none">
+        <type name="Suggestion"/>
+      </property>
+      <glib:signal name="suggestion-activated" when="last">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="object" transfer-ownership="none">
+            <type name="Suggestion"/>
+          </parameter>
+        </parameters>
+      </glib:signal>
+    </class>
+    <record name="SuggestionPopoverClass"
+            c:type="EggSuggestionPopoverClass"
+            glib:is-gtype-struct-for="SuggestionPopover">
+      <field name="parent_class">
+        <type name="Gtk.WindowClass" c:type="GtkWindowClass"/>
+      </field>
+    </record>
+    <class name="SuggestionRow"
+           c:symbol-prefix="suggestion_row"
+           c:type="EggSuggestionRow"
+           parent="Gtk.ListBoxRow"
+           glib:type-name="EggSuggestionRow"
+           glib:get-type="egg_suggestion_row_get_type"
+           glib:type-struct="SuggestionRowClass">
+      <implements name="Atk.ImplementorIface"/>
+      <implements name="Gtk.Buildable"/>
+      <constructor name="new" c:identifier="egg_suggestion_row_new">
+        <return-value transfer-ownership="none">
+          <type name="Gtk.Widget" c:type="GtkWidget*"/>
+        </return-value>
+      </constructor>
+      <method name="get_suggestion"
+              c:identifier="egg_suggestion_row_get_suggestion">
+        <doc xml:space="preserve">Gets the suggestion to be displayed.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">An #EggSuggestion</doc>
+          <type name="Suggestion" c:type="EggSuggestion*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <doc xml:space="preserve">a #EggSuggestionRow</doc>
+            <type name="SuggestionRow" c:type="EggSuggestionRow*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="set_suggestion"
+              c:identifier="egg_suggestion_row_set_suggestion">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="SuggestionRow" c:type="EggSuggestionRow*"/>
+          </instance-parameter>
+          <parameter name="suggestion" transfer-ownership="none">
+            <type name="Suggestion" c:type="EggSuggestion*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <property name="suggestion" writable="1" transfer-ownership="none">
+        <type name="Suggestion"/>
+      </property>
+      <field name="parent_instance">
+        <type name="Gtk.ListBoxRow" c:type="GtkListBoxRow"/>
+      </field>
+    </class>
+    <record name="SuggestionRowClass"
+            c:type="EggSuggestionRowClass"
+            glib:is-gtype-struct-for="SuggestionRow">
+      <field name="parent_class">
+        <type name="Gtk.ListBoxRowClass" c:type="GtkListBoxRowClass"/>
+      </field>
+      <field name="_reserved1">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+      <field name="_reserved2">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+      <field name="_reserved3">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+      <field name="_reserved4">
+        <type name="gpointer" c:type="gpointer"/>
+      </field>
+    </record>
     <class name="TaskCache"
            c:symbol-prefix="task_cache"
            c:type="EggTaskCache"
@@ -3197,6 +4339,16 @@ the last state before the cycle was detected.</doc>
                      allow-none="1">
             <type name="gpointer" c:type="gconstpointer"/>
           </parameter>
+        </parameters>
+      </method>
+      <method name="evict_all" c:identifier="egg_task_cache_evict_all">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="self" transfer-ownership="none">
+            <type name="TaskCache" c:type="EggTaskCache*"/>
+          </instance-parameter>
         </parameters>
       </method>
       <method name="get_async" c:identifier="egg_task_cache_get_async">

@@ -8157,6 +8157,56 @@ If the reference count drops to 0, @patch is freed.</doc>
         </parameters>
       </method>
     </record>
+    <class name="ProxyOptions"
+           c:symbol-prefix="proxy_options"
+           c:type="GgitProxyOptions"
+           parent="GObject.Object"
+           glib:type-name="GgitProxyOptions"
+           glib:get-type="ggit_proxy_options_get_type"
+           glib:type-struct="ProxyOptionsClass">
+      <doc xml:space="preserve">Represents a git proxy options.</doc>
+      <constructor name="new" c:identifier="ggit_proxy_options_new">
+        <doc xml:space="preserve">Create a new proxy options object.</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:space="preserve">a #GgitProxyOptions.</doc>
+          <type name="ProxyOptions" c:type="GgitProxyOptions*"/>
+        </return-value>
+      </constructor>
+      <field name="parent_instance">
+        <type name="GObject.Object" c:type="GObject"/>
+      </field>
+    </class>
+    <record name="ProxyOptionsClass"
+            c:type="GgitProxyOptionsClass"
+            glib:is-gtype-struct-for="ProxyOptions">
+      <field name="parent_class">
+        <type name="GObject.ObjectClass" c:type="GObjectClass"/>
+      </field>
+    </record>
+    <enumeration name="ProxyType"
+                 glib:type-name="GgitProxyType"
+                 glib:get-type="ggit_proxy_type_get_type"
+                 c:type="GgitProxyType">
+      <doc xml:space="preserve">The type of proxy to use.</doc>
+      <member name="none"
+              value="0"
+              c:identifier="GGIT_PROXY_NONE"
+              glib:nick="none">
+        <doc xml:space="preserve">Do not attempt to connect through a proxy.</doc>
+      </member>
+      <member name="auto"
+              value="1"
+              c:identifier="GGIT_PROXY_AUTO"
+              glib:nick="auto">
+        <doc xml:space="preserve">Try to auto-detect the proxy from the git configuration.</doc>
+      </member>
+      <member name="specified"
+              value="2"
+              c:identifier="GGIT_PROXY_SPECIFIED"
+              glib:nick="specified">
+        <doc xml:space="preserve">Connect via the URL given in the options.</doc>
+      </member>
+    </enumeration>
     <class name="PushOptions"
            c:symbol-prefix="push_options"
            c:type="GgitPushOptions"
@@ -9441,6 +9491,13 @@ starts up a specific binary which can only do the one or the other.</doc>
             <doc xml:space="preserve">the callbacks to use for this connection.</doc>
             <type name="RemoteCallbacks" c:type="GgitRemoteCallbacks*"/>
           </parameter>
+          <parameter name="proxy_options"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <doc xml:space="preserve">the proxy options.</doc>
+            <type name="ProxyOptions" c:type="GgitProxyOptions*"/>
+          </parameter>
           <parameter name="custom_headers"
                      transfer-ownership="none"
                      nullable="1"
@@ -10110,6 +10167,38 @@ and stops when a repository is found.</doc>
           <parameter name="location" transfer-ownership="none">
             <doc xml:space="preserve">the base location where the lookup starts.</doc>
             <type name="Gio.File" c:type="GFile*"/>
+          </parameter>
+        </parameters>
+      </function>
+      <function name="discover_full"
+                c:identifier="ggit_repository_discover_full"
+                throws="1">
+        <doc xml:space="preserve">Looks for a git repository.
+
+The lookup starts from @path and walks up the parent directories
+and stops when a repository is found.</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:space="preserve">the repository location.</doc>
+          <type name="Gio.File" c:type="GFile*"/>
+        </return-value>
+        <parameters>
+          <parameter name="location" transfer-ownership="none">
+            <doc xml:space="preserve">the base location where the lookup starts.</doc>
+            <type name="Gio.File" c:type="GFile*"/>
+          </parameter>
+          <parameter name="across_fs" transfer-ownership="none">
+            <doc xml:space="preserve">indictaes whether lookup will work across filesystem devices.</doc>
+            <type name="gboolean" c:type="gboolean"/>
+          </parameter>
+          <parameter name="ceiling_dirs"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <doc xml:space="preserve">a list of absolute paths
+  at which lookup will stop when reached, or %NULL.</doc>
+            <array c:type="gchar**">
+              <type name="utf8" c:type="gchar*"/>
+            </array>
           </parameter>
         </parameters>
       </function>

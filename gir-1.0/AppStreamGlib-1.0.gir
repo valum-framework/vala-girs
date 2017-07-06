@@ -15,6 +15,12 @@ and/or use gtk-doc annotations.  -->
              shared-library="libappstream-glib.so.8"
              c:identifier-prefixes="As"
              c:symbol-prefixes="as_">
+    <alias name="AppSourceKind" c:type="AsAppSourceKind">
+      <doc xml:space="preserve">The source kind.
+
+This has been deprecated since 0.6.9 in favour of using AsFormatKind.</doc>
+      <type name="FormatKind" c:type="AsFormatKind"/>
+    </alias>
     <alias name="ImageAlphaFlags" c:type="AsImageAlphaFlags">
       <doc xml:space="preserve">The flags used for reporting the alpha cutouts in the image.</doc>
       <type name="guint" c:type="guint"/>
@@ -59,8 +65,8 @@ and/or use gtk-doc annotations.  -->
                 version="0.1.8">
         <doc xml:space="preserve">Guesses the source kind based from the filename.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:space="preserve">A #AsAppSourceKind, e.g. %AS_APP_SOURCE_KIND_APPSTREAM.</doc>
-          <type name="AppSourceKind" c:type="AsAppSourceKind"/>
+          <doc xml:space="preserve">A #AsFormatKind, e.g. %AS_FORMAT_KIND_APPSTREAM.</doc>
+          <type name="FormatKind" c:type="AsFormatKind"/>
         </return-value>
         <parameters>
           <parameter name="filename" transfer-ownership="none">
@@ -164,8 +170,8 @@ and/or use gtk-doc annotations.  -->
                 version="0.2.2">
         <doc xml:space="preserve">Converts the text representation to an enumerated value.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:space="preserve">A #AsAppSourceKind, e.g. %AS_APP_SOURCE_KIND_APPSTREAM.</doc>
-          <type name="AppSourceKind" c:type="AsAppSourceKind"/>
+          <doc xml:space="preserve">A #AsFormatKind, e.g. %AS_FORMAT_KIND_APPSTREAM.</doc>
+          <type name="FormatKind" c:type="AsFormatKind"/>
         </return-value>
         <parameters>
           <parameter name="source_kind" transfer-ownership="none">
@@ -184,8 +190,8 @@ and/or use gtk-doc annotations.  -->
         </return-value>
         <parameters>
           <parameter name="source_kind" transfer-ownership="none">
-            <doc xml:space="preserve">the #AsAppSourceKind.</doc>
-            <type name="AppSourceKind" c:type="AsAppSourceKind"/>
+            <doc xml:space="preserve">the #AsFormatKind.</doc>
+            <type name="FormatKind" c:type="AsFormatKind"/>
           </parameter>
         </parameters>
       </function>
@@ -326,6 +332,24 @@ and/or use gtk-doc annotations.  -->
           </parameter>
         </parameters>
       </method>
+      <method name="add_format"
+              c:identifier="as_app_add_format"
+              version="0.6.9">
+        <doc xml:space="preserve">Add a format the application has been built from.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="app" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsApp instance.</doc>
+            <type name="App" c:type="AsApp*"/>
+          </instance-parameter>
+          <parameter name="format" transfer-ownership="none">
+            <doc xml:space="preserve">the #AsFormat.</doc>
+            <type name="Format" c:type="AsFormat*"/>
+          </parameter>
+        </parameters>
+      </method>
       <method name="add_icon" c:identifier="as_app_add_icon" version="0.3.1">
         <doc xml:space="preserve">Adds a icon to an application.</doc>
         <return-value transfer-ownership="none">
@@ -417,6 +441,24 @@ and/or use gtk-doc annotations.  -->
           <parameter name="locale" transfer-ownership="none">
             <doc xml:space="preserve">the locale, or %NULL. e.g. "en_GB"</doc>
             <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="add_launchable"
+              c:identifier="as_app_add_launchable"
+              version="0.6.13">
+        <doc xml:space="preserve">Adds a launchable to an application.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="app" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsApp instance.</doc>
+            <type name="App" c:type="AsApp*"/>
+          </instance-parameter>
+          <parameter name="launchable" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsLaunchable instance.</doc>
+            <type name="Launchable" c:type="AsLaunchable*"/>
           </parameter>
         </parameters>
       </method>
@@ -547,6 +589,24 @@ and/or use gtk-doc annotations.  -->
           <parameter name="release" transfer-ownership="none">
             <doc xml:space="preserve">a #AsRelease instance.</doc>
             <type name="Release" c:type="AsRelease*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="add_require"
+              c:identifier="as_app_add_require"
+              version="0.6.7">
+        <doc xml:space="preserve">Adds a require to an application.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="app" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsApp instance.</doc>
+            <type name="App" c:type="AsApp*"/>
+          </instance-parameter>
+          <parameter name="require" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsRequire instance.</doc>
+            <type name="Require" c:type="AsRequire*"/>
           </parameter>
         </parameters>
       </method>
@@ -990,6 +1050,76 @@ if all architectures are supported.</doc>
           </instance-parameter>
         </parameters>
       </method>
+      <method name="get_format_by_filename"
+              c:identifier="as_app_get_format_by_filename"
+              version="0.6.9">
+        <doc xml:space="preserve">Searches the list of formats for a specific filename.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">A #AsFormat, or %NULL if not found</doc>
+          <type name="Format" c:type="AsFormat*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="app" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsApp instance.</doc>
+            <type name="App" c:type="AsApp*"/>
+          </instance-parameter>
+          <parameter name="filename" transfer-ownership="none">
+            <doc xml:space="preserve">a filename, e.g. "/home/hughsie/dave.desktop"</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="get_format_by_kind"
+              c:identifier="as_app_get_format_by_kind"
+              version="0.6.9">
+        <doc xml:space="preserve">Searches the list of formats for a specific format kind.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">A #AsFormat, or %NULL if not found</doc>
+          <type name="Format" c:type="AsFormat*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="app" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsApp instance.</doc>
+            <type name="App" c:type="AsApp*"/>
+          </instance-parameter>
+          <parameter name="kind" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsFormatKind, e.g. %AS_FORMAT_KIND_APPDATA</doc>
+            <type name="FormatKind" c:type="AsFormatKind"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="get_format_default"
+              c:identifier="as_app_get_format_default"
+              version="0.6.9">
+        <doc xml:space="preserve">Returns the default format.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">A #AsFormat, or %NULL if not found</doc>
+          <type name="Format" c:type="AsFormat*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="app" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsApp instance.</doc>
+            <type name="App" c:type="AsApp*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_formats"
+              c:identifier="as_app_get_formats"
+              version="0.6.9">
+        <doc xml:space="preserve">Gets any formats that make up the application.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">an array</doc>
+          <array name="GLib.PtrArray" c:type="GPtrArray*">
+            <type name="utf8"/>
+          </array>
+        </return-value>
+        <parameters>
+          <instance-parameter name="app" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsApp instance.</doc>
+            <type name="App" c:type="AsApp*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
       <method name="get_icon_default"
               c:identifier="as_app_get_icon_default"
               version="0.3.1">
@@ -1194,6 +1324,57 @@ becomes "gimp" and is used for cache directories.</doc>
           <type name="GLib.List" c:type="GList*">
             <type name="utf8"/>
           </type>
+        </return-value>
+        <parameters>
+          <instance-parameter name="app" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsApp instance.</doc>
+            <type name="App" c:type="AsApp*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_launchable_by_kind"
+              c:identifier="as_app_get_launchable_by_kind"
+              version="0.6.13">
+        <doc xml:space="preserve">Searches the list of launchables for a specific launchable kind.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">A #AsLaunchable, or %NULL if not found</doc>
+          <type name="Launchable" c:type="AsLaunchable*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="app" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsApp instance.</doc>
+            <type name="App" c:type="AsApp*"/>
+          </instance-parameter>
+          <parameter name="kind" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsLaunchableKind, e.g. %AS_FORMAT_KIND_APPDATA</doc>
+            <type name="LaunchableKind" c:type="AsLaunchableKind"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="get_launchable_default"
+              c:identifier="as_app_get_launchable_default"
+              version="0.6.13">
+        <doc xml:space="preserve">Returns the default launchable.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">A #AsLaunchable, or %NULL if not found</doc>
+          <type name="Launchable" c:type="AsLaunchable*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="app" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsApp instance.</doc>
+            <type name="App" c:type="AsApp*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_launchables"
+              c:identifier="as_app_get_launchables"
+              version="0.6.13">
+        <doc xml:space="preserve">Gets all the launchables the application has.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">an array</doc>
+          <array name="GLib.PtrArray" c:type="GPtrArray*">
+            <type name="Launchable"/>
+          </array>
         </return-value>
         <parameters>
           <instance-parameter name="app" transfer-ownership="none">
@@ -1496,6 +1677,48 @@ becomes "gimp" and is used for cache directories.</doc>
           </instance-parameter>
         </parameters>
       </method>
+      <method name="get_require_by_value"
+              c:identifier="as_app_get_require_by_value"
+              version="0.6.7">
+        <doc xml:space="preserve">Gets a specific requirement for the application.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">A #AsRequire, or %NULL for not found</doc>
+          <type name="Require" c:type="AsRequire*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="app" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsApp instance.</doc>
+            <type name="App" c:type="AsApp*"/>
+          </instance-parameter>
+          <parameter name="kind" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsRequireKind, e.g. %AS_REQUIRE_KIND_FIRMWARE</doc>
+            <type name="RequireKind" c:type="AsRequireKind"/>
+          </parameter>
+          <parameter name="value" transfer-ownership="none">
+            <doc xml:space="preserve">a string, or NULL, e.g. `bootloader`</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="get_requires"
+              c:identifier="as_app_get_requires"
+              version="0.6.7">
+        <doc xml:space="preserve">Gets any requires the application has defined. A rquirement could be that
+a firmware version has to be below a defined version or that another
+application is required to be installed.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">an array</doc>
+          <array name="GLib.PtrArray" c:type="GPtrArray*">
+            <type name="Require"/>
+          </array>
+        </return-value>
+        <parameters>
+          <instance-parameter name="app" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsApp instance.</doc>
+            <type name="App" c:type="AsApp*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
       <method name="get_reviews"
               c:identifier="as_app_get_reviews"
               version="0.6.1">
@@ -1543,12 +1766,26 @@ becomes "gimp" and is used for cache directories.</doc>
           </instance-parameter>
         </parameters>
       </method>
+      <method name="get_search_match"
+              c:identifier="as_app_get_search_match"
+              version="0.6.13">
+        <doc xml:space="preserve">Gets the token match fields. The bitfield given here is used to choose what
+is included in the token cache.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">a #AsAppSearchMatch, e.g. %AS_APP_SEARCH_MATCH_PKGNAME</doc>
+          <type name="AppSearchMatch" c:type="AsAppSearchMatch"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="app" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsApp instance.</doc>
+            <type name="App" c:type="AsApp*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
       <method name="get_source_file"
               c:identifier="as_app_get_source_file"
               version="0.2.2">
-        <doc xml:space="preserve">Gets the source filename the instance was populated from.
-
-NOTE: this is not set for %AS_APP_SOURCE_KIND_APPSTREAM entries.</doc>
+        <doc xml:space="preserve">Gets the default source filename the instance was populated from.</doc>
         <return-value transfer-ownership="none">
           <doc xml:space="preserve">string, or %NULL if unset</doc>
           <type name="utf8" c:type="const gchar*"/>
@@ -1566,7 +1803,7 @@ NOTE: this is not set for %AS_APP_SOURCE_KIND_APPSTREAM entries.</doc>
         <doc xml:space="preserve">Gets the source kind, i.e. where the AsApp came from.</doc>
         <return-value transfer-ownership="none">
           <doc xml:space="preserve">enumerated value</doc>
-          <type name="AppSourceKind" c:type="AsAppSourceKind"/>
+          <type name="FormatKind" c:type="AsFormatKind"/>
         </return-value>
         <parameters>
           <instance-parameter name="app" transfer-ownership="none">
@@ -1869,6 +2106,60 @@ Applications that are not suitable for the store will have vetos added.</doc>
           <parameter name="flags" transfer-ownership="none">
             <doc xml:space="preserve">#AsAppParseFlags, e.g. %AS_APP_PARSE_FLAG_USE_HEURISTICS</doc>
             <type name="AppParseFlags" c:type="AsAppParseFlags"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="remove_category"
+              c:identifier="as_app_remove_category"
+              version="0.6.13">
+        <doc xml:space="preserve">Removed a menu category from the application.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="app" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsApp instance.</doc>
+            <type name="App" c:type="AsApp*"/>
+          </instance-parameter>
+          <parameter name="category" transfer-ownership="none">
+            <doc xml:space="preserve">the category.</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="remove_format"
+              c:identifier="as_app_remove_format"
+              version="0.6.9">
+        <doc xml:space="preserve">Removes a format the application has been built from.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="app" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsApp instance.</doc>
+            <type name="App" c:type="AsApp*"/>
+          </instance-parameter>
+          <parameter name="format" transfer-ownership="none">
+            <doc xml:space="preserve">the #AsFormat.</doc>
+            <type name="Format" c:type="AsFormat*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="remove_kudo"
+              c:identifier="as_app_remove_kudo"
+              version="0.6.13">
+        <doc xml:space="preserve">Remove a kudo the application has obtained.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="app" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsApp instance.</doc>
+            <type name="App" c:type="AsApp*"/>
+          </instance-parameter>
+          <parameter name="kudo" transfer-ownership="none">
+            <doc xml:space="preserve">the kudo.</doc>
+            <type name="utf8" c:type="const gchar*"/>
           </parameter>
         </parameters>
       </method>
@@ -2247,6 +2538,25 @@ are better than negative numbers.</doc>
           </parameter>
         </parameters>
       </method>
+      <method name="set_search_match"
+              c:identifier="as_app_set_search_match"
+              version="0.6.13">
+        <doc xml:space="preserve">Sets the token match fields. The bitfield given here is used to choose what
+is included in the token cache.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="app" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsApp instance.</doc>
+            <type name="App" c:type="AsApp*"/>
+          </instance-parameter>
+          <parameter name="search_match" transfer-ownership="none">
+            <doc xml:space="preserve">the #AsAppSearchMatch, e.g. %AS_APP_SEARCH_MATCH_PKGNAME</doc>
+            <type name="AppSearchMatch" c:type="AsAppSearchMatch"/>
+          </parameter>
+        </parameters>
+      </method>
       <method name="set_source_file"
               c:identifier="as_app_set_source_file"
               version="0.2.2">
@@ -2278,8 +2588,8 @@ are better than negative numbers.</doc>
             <type name="App" c:type="AsApp*"/>
           </instance-parameter>
           <parameter name="source_kind" transfer-ownership="none">
-            <doc xml:space="preserve">the #AsAppSourceKind.</doc>
-            <type name="AppSourceKind" c:type="AsAppSourceKind"/>
+            <doc xml:space="preserve">the #AsFormatKind.</doc>
+            <type name="FormatKind" c:type="AsFormatKind"/>
           </parameter>
         </parameters>
       </method>
@@ -2573,6 +2883,7 @@ trusted input.</doc>
         <doc xml:space="preserve">Localization data</doc>
       </member>
       <member name="console" value="15" c:identifier="AS_APP_KIND_CONSOLE">
+        <doc xml:space="preserve">Console program</doc>
       </member>
       <member name="driver" value="16" c:identifier="AS_APP_KIND_DRIVER">
         <doc xml:space="preserve">Driver for hardware support</doc>
@@ -2597,7 +2908,7 @@ trusted input.</doc>
         <doc xml:space="preserve">Merge components, appending</doc>
       </member>
     </enumeration>
-    <enumeration name="AppParseFlags" c:type="AsAppParseFlags">
+    <bitfield name="AppParseFlags" c:type="AsAppParseFlags">
       <doc xml:space="preserve">The flags to use when parsing resources.</doc>
       <member name="none" value="0" c:identifier="AS_APP_PARSE_FLAG_NONE">
         <doc xml:space="preserve">No special actions to use</doc>
@@ -2637,7 +2948,12 @@ trusted input.</doc>
               c:identifier="AS_APP_PARSE_FLAG_ADD_ALL_METADATA">
         <doc xml:space="preserve">Add all extra metadata from the source file</doc>
       </member>
-    </enumeration>
+      <member name="only_native_langs"
+              value="128"
+              c:identifier="AS_APP_PARSE_FLAG_ONLY_NATIVE_LANGS">
+        <doc xml:space="preserve">Only load native languages</doc>
+      </member>
+    </bitfield>
     <bitfield name="AppQuirk" c:type="AsAppQuirk">
       <doc xml:space="preserve">The component attributes.</doc>
       <member name="none" value="0" c:identifier="AS_APP_QUIRK_NONE">
@@ -2688,6 +3004,14 @@ trusted input.</doc>
               c:identifier="AS_APP_QUIRK_NEEDS_USER_ACTION">
         <doc xml:space="preserve">The component requires some kind of user action</doc>
       </member>
+      <member name="is_proxy" value="512" c:identifier="AS_APP_QUIRK_IS_PROXY">
+        <doc xml:space="preserve">Is a proxy app that operates on other applications</doc>
+      </member>
+      <member name="removable_hardware"
+              value="1024"
+              c:identifier="AS_APP_QUIRK_REMOVABLE_HARDWARE">
+        <doc xml:space="preserve">The device is unusable whilst the action is performed</doc>
+      </member>
     </bitfield>
     <enumeration name="AppScope" c:type="AsAppScope">
       <doc xml:space="preserve">The application scope.</doc>
@@ -2701,37 +3025,49 @@ trusted input.</doc>
         <doc xml:space="preserve">System scope</doc>
       </member>
     </enumeration>
-    <enumeration name="AppSourceKind" c:type="AsAppSourceKind">
-      <doc xml:space="preserve">The source kind.</doc>
-      <member name="unknown"
-              value="0"
-              c:identifier="AS_APP_SOURCE_KIND_UNKNOWN">
-        <doc xml:space="preserve">Not sourced from a file</doc>
+    <bitfield name="AppSearchMatch" c:type="AsAppSearchMatch">
+      <doc xml:space="preserve">The token match kind, which we want to be exactly 16 bits for storage
+reasons.</doc>
+      <member name="none" value="0" c:identifier="AS_APP_SEARCH_MATCH_NONE">
+        <doc xml:space="preserve">No token matching</doc>
       </member>
-      <member name="appstream"
+      <member name="mimetype"
               value="1"
-              c:identifier="AS_APP_SOURCE_KIND_APPSTREAM">
-        <doc xml:space="preserve">Sourced from a AppStream file</doc>
+              c:identifier="AS_APP_SEARCH_MATCH_MIMETYPE">
+        <doc xml:space="preserve">Use the app mimetypes</doc>
       </member>
-      <member name="desktop"
+      <member name="pkgname"
               value="2"
-              c:identifier="AS_APP_SOURCE_KIND_DESKTOP">
-        <doc xml:space="preserve">Sourced from a desktop file</doc>
+              c:identifier="AS_APP_SEARCH_MATCH_PKGNAME">
+        <doc xml:space="preserve">Use the app package name</doc>
       </member>
-      <member name="appdata"
-              value="3"
-              c:identifier="AS_APP_SOURCE_KIND_APPDATA">
-        <doc xml:space="preserve">Sourced from a AppData file</doc>
-      </member>
-      <member name="metainfo"
+      <member name="description"
               value="4"
-              c:identifier="AS_APP_SOURCE_KIND_METAINFO">
-        <doc xml:space="preserve">Sourced from a MetaInfo file</doc>
+              c:identifier="AS_APP_SEARCH_MATCH_DESCRIPTION">
+        <doc xml:space="preserve">Use the app description</doc>
       </member>
-      <member name="inf" value="5" c:identifier="AS_APP_SOURCE_KIND_INF">
-        <doc xml:space="preserve">Sourced from a inf file</doc>
+      <member name="comment"
+              value="8"
+              c:identifier="AS_APP_SEARCH_MATCH_COMMENT">
+        <doc xml:space="preserve">Use the app comment</doc>
       </member>
-    </enumeration>
+      <member name="name" value="16" c:identifier="AS_APP_SEARCH_MATCH_NAME">
+        <doc xml:space="preserve">Use the app name</doc>
+      </member>
+      <member name="keyword"
+              value="32"
+              c:identifier="AS_APP_SEARCH_MATCH_KEYWORD">
+        <doc xml:space="preserve">Use the app keyword</doc>
+      </member>
+      <member name="id" value="64" c:identifier="AS_APP_SEARCH_MATCH_ID">
+        <doc xml:space="preserve">Use the app application ID</doc>
+      </member>
+      <member name="origin"
+              value="128"
+              c:identifier="AS_APP_SEARCH_MATCH_ORIGIN">
+        <doc xml:space="preserve">Use the app origin</doc>
+      </member>
+    </bitfield>
     <enumeration name="AppState" c:type="AsAppState">
       <doc xml:space="preserve">The application state.</doc>
       <member name="unknown" value="0" c:identifier="AS_APP_STATE_UNKNOWN">
@@ -2925,9 +3261,9 @@ trusted input.</doc>
               c:identifier="AS_APP_SUBSUME_FLAG_KEYWORDS">
         <doc xml:space="preserve">Copy the keywords</doc>
       </member>
-      <member name="source_file"
+      <member name="formats"
               value="268435456"
-              c:identifier="AS_APP_SUBSUME_FLAG_SOURCE_FILE">
+              c:identifier="AS_APP_SUBSUME_FLAG_FORMATS">
         <doc xml:space="preserve">Copy the source file</doc>
       </member>
       <member name="branch"
@@ -2963,6 +3299,11 @@ trusted input.</doc>
       <member name="suggests"
               value="34359738368"
               c:identifier="AS_APP_SUBSUME_FLAG_SUGGESTS">
+      </member>
+      <member name="launchables"
+              value="68719476736"
+              c:identifier="AS_APP_SUBSUME_FLAG_LAUNCHABLES">
+        <doc xml:space="preserve">Copy the launchables</doc>
       </member>
     </bitfield>
     <enumeration name="AppTrustFlags" c:type="AsAppTrustFlags">
@@ -3136,7 +3477,7 @@ trusted input.</doc>
             <type name="Bundle" c:type="AsBundle*"/>
           </instance-parameter>
           <parameter name="kind" transfer-ownership="none">
-            <doc xml:space="preserve">the #AsBundleKind, e.g. %AS_BUNDLE_KIND_THUMBNAIL.</doc>
+            <doc xml:space="preserve">the #AsBundleKind, e.g. %AS_BUNDLE_KIND_FLATPAK.</doc>
             <type name="BundleKind" c:type="AsBundleKind"/>
           </parameter>
         </parameters>
@@ -3743,6 +4084,230 @@ parts, others may get nightmares.</doc>
         <doc xml:space="preserve">An intense amount</doc>
       </member>
     </enumeration>
+    <class name="Format"
+           c:symbol-prefix="format"
+           c:type="AsFormat"
+           parent="GObject.Object"
+           glib:type-name="AsFormat"
+           glib:get-type="as_format_get_type"
+           glib:type-struct="FormatClass">
+      <constructor name="new" c:identifier="as_format_new" version="0.6.9">
+        <doc xml:space="preserve">Creates a new #AsFormat.</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:space="preserve">a #AsFormat</doc>
+          <type name="Format" c:type="AsFormat*"/>
+        </return-value>
+      </constructor>
+      <function name="guess_kind"
+                c:identifier="as_format_guess_kind"
+                version="0.6.9">
+        <doc xml:space="preserve">Guesses the source kind based from the filename.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">A #AsFormatKind, e.g. %AS_FORMAT_KIND_APPSTREAM.</doc>
+          <type name="FormatKind" c:type="AsFormatKind"/>
+        </return-value>
+        <parameters>
+          <parameter name="filename" transfer-ownership="none">
+            <doc xml:space="preserve">a file name</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </function>
+      <function name="kind_from_string"
+                c:identifier="as_format_kind_from_string"
+                version="0.6.9">
+        <doc xml:space="preserve">Converts the text representation to an enumerated value.</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:space="preserve">a #AsFormatKind, or %AS_FORMAT_KIND_UNKNOWN for unknown.</doc>
+          <type name="FormatKind" c:type="AsFormatKind"/>
+        </return-value>
+        <parameters>
+          <parameter name="kind" transfer-ownership="none">
+            <doc xml:space="preserve">the string.</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </function>
+      <function name="kind_to_string" c:identifier="as_format_kind_to_string">
+        <return-value transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </return-value>
+        <parameters>
+          <parameter name="kind" transfer-ownership="none">
+            <type name="FormatKind" c:type="AsFormatKind"/>
+          </parameter>
+        </parameters>
+      </function>
+      <method name="equal" c:identifier="as_format_equal" version="0.6.9">
+        <doc xml:space="preserve">Checks if two formats are the same.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">%TRUE for success</doc>
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="format1" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsFormat instance.</doc>
+            <type name="Format" c:type="AsFormat*"/>
+          </instance-parameter>
+          <parameter name="format2" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsFormat instance.</doc>
+            <type name="Format" c:type="AsFormat*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="get_filename"
+              c:identifier="as_format_get_filename"
+              version="0.6.9">
+        <doc xml:space="preserve">Gets the filename required for this format.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">Runtime identifier, e.g. "org.gnome.Platform/i386/master"</doc>
+          <type name="utf8" c:type="const gchar*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="format" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsFormat instance.</doc>
+            <type name="Format" c:type="AsFormat*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_kind"
+              c:identifier="as_format_get_kind"
+              version="0.6.9">
+        <doc xml:space="preserve">Gets the format kind.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">the #AsFormatKind</doc>
+          <type name="FormatKind" c:type="AsFormatKind"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="format" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsFormat instance.</doc>
+            <type name="Format" c:type="AsFormat*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="set_filename"
+              c:identifier="as_format_set_filename"
+              version="0.6.9">
+        <doc xml:space="preserve">Sets the filename required for this format.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="format" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsFormat instance.</doc>
+            <type name="Format" c:type="AsFormat*"/>
+          </instance-parameter>
+          <parameter name="filename" transfer-ownership="none">
+            <doc xml:space="preserve">the URL.</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_kind"
+              c:identifier="as_format_set_kind"
+              version="0.6.9">
+        <doc xml:space="preserve">Sets the format kind.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="format" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsFormat instance.</doc>
+            <type name="Format" c:type="AsFormat*"/>
+          </instance-parameter>
+          <parameter name="kind" transfer-ownership="none">
+            <doc xml:space="preserve">the #AsFormatKind, e.g. %AS_FORMAT_KIND_APPDATA.</doc>
+            <type name="FormatKind" c:type="AsFormatKind"/>
+          </parameter>
+        </parameters>
+      </method>
+      <field name="parent_instance">
+        <type name="GObject.Object" c:type="GObject"/>
+      </field>
+    </class>
+    <record name="FormatClass"
+            c:type="AsFormatClass"
+            glib:is-gtype-struct-for="Format">
+      <field name="parent_class">
+        <type name="GObject.ObjectClass" c:type="GObjectClass"/>
+      </field>
+      <field name="_as_reserved1" introspectable="0">
+        <callback name="_as_reserved1">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="_as_reserved2" introspectable="0">
+        <callback name="_as_reserved2">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="_as_reserved3" introspectable="0">
+        <callback name="_as_reserved3">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="_as_reserved4" introspectable="0">
+        <callback name="_as_reserved4">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="_as_reserved5" introspectable="0">
+        <callback name="_as_reserved5">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="_as_reserved6" introspectable="0">
+        <callback name="_as_reserved6">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="_as_reserved7" introspectable="0">
+        <callback name="_as_reserved7">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="_as_reserved8" introspectable="0">
+        <callback name="_as_reserved8">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+    </record>
+    <enumeration name="FormatKind" c:type="AsFormatKind">
+      <doc xml:space="preserve">The format kind.</doc>
+      <member name="unknown" value="0" c:identifier="AS_FORMAT_KIND_UNKNOWN">
+        <doc xml:space="preserve">Not formatd from a file</doc>
+      </member>
+      <member name="appstream"
+              value="1"
+              c:identifier="AS_FORMAT_KIND_APPSTREAM">
+        <doc xml:space="preserve">AppStream file</doc>
+      </member>
+      <member name="desktop" value="2" c:identifier="AS_FORMAT_KIND_DESKTOP">
+        <doc xml:space="preserve">Desktop file</doc>
+      </member>
+      <member name="appdata" value="3" c:identifier="AS_FORMAT_KIND_APPDATA">
+        <doc xml:space="preserve">AppData file</doc>
+      </member>
+      <member name="metainfo" value="4" c:identifier="AS_FORMAT_KIND_METAINFO">
+        <doc xml:space="preserve">MetaInfo file</doc>
+      </member>
+    </enumeration>
     <constant name="IMAGE_ALPHA_FLAG_BOTTOM"
               value="2"
               c:type="AS_IMAGE_ALPHA_FLAG_BOTTOM">
@@ -3962,6 +4527,21 @@ NOTE: This is only set for icons of type %AS_ICON_KIND_LOCAL</doc>
           </instance-parameter>
         </parameters>
       </method>
+      <method name="get_scale"
+              c:identifier="as_icon_get_scale"
+              version="0.6.13">
+        <doc xml:space="preserve">Gets the icon scale.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">scale factor</doc>
+          <type name="guint" c:type="guint"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="icon" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsIcon instance.</doc>
+            <type name="Icon" c:type="AsIcon*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
       <method name="get_url" c:identifier="as_icon_get_url" version="0.3.2">
         <doc xml:space="preserve">Gets the full qualified URL for the icon, usually pointing at some mirror.
 NOTE: This is only set for icons of type %AS_ICON_KIND_REMOTE</doc>
@@ -4112,6 +4692,24 @@ NOTE: This is only set for icons of type %AS_ICON_KIND_REMOTE</doc>
           <parameter name="prefix" transfer-ownership="none">
             <doc xml:space="preserve">the new filename prefix.</doc>
             <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_scale"
+              c:identifier="as_icon_set_scale"
+              version="0.6.13">
+        <doc xml:space="preserve">Sets the icon scale.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="icon" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsIcon instance.</doc>
+            <type name="Icon" c:type="AsIcon*"/>
+          </instance-parameter>
+          <parameter name="scale" transfer-ownership="none">
+            <doc xml:space="preserve">the scale as a factor.</doc>
+            <type name="guint" c:type="guint"/>
           </parameter>
         </parameters>
       </method>
@@ -4920,52 +5518,196 @@ using as_image_get_basename(). This can be overridden if required.</doc>
         <doc xml:space="preserve">Installs a high DPI icon</doc>
       </member>
     </enumeration>
-    <constant name="MAJOR_VERSION" value="0" c:type="AS_MAJOR_VERSION">
-      <type name="gint" c:type="gint"/>
-    </constant>
-    <constant name="MICRO_VERSION" value="5" c:type="AS_MICRO_VERSION">
-      <type name="gint" c:type="gint"/>
-    </constant>
-    <constant name="MINOR_VERSION" value="6" c:type="AS_MINOR_VERSION">
-      <type name="gint" c:type="gint"/>
-    </constant>
-    <bitfield name="MarkupConvertFlag" c:type="AsMarkupConvertFlag">
-      <doc xml:space="preserve">The flags used when converting descriptions from AppStream-style.</doc>
-      <member name="none" value="0" c:identifier="AS_MARKUP_CONVERT_FLAG_NONE">
-        <doc xml:space="preserve">No flags set</doc>
-      </member>
-      <member name="ignore_errors"
-              value="1"
-              c:identifier="AS_MARKUP_CONVERT_FLAG_IGNORE_ERRORS">
-        <doc xml:space="preserve">Ignore errors where possible</doc>
-      </member>
-    </bitfield>
-    <enumeration name="MarkupConvertFormat" c:type="AsMarkupConvertFormat">
-      <doc xml:space="preserve">The format used when converting to or from AppStream descriptions.</doc>
-      <member name="simple"
+    <class name="Launchable"
+           c:symbol-prefix="launchable"
+           c:type="AsLaunchable"
+           parent="GObject.Object"
+           glib:type-name="AsLaunchable"
+           glib:get-type="as_launchable_get_type"
+           glib:type-struct="LaunchableClass">
+      <constructor name="new"
+                   c:identifier="as_launchable_new"
+                   version="0.6.13">
+        <doc xml:space="preserve">Creates a new #AsLaunchable.</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:space="preserve">a #AsLaunchable</doc>
+          <type name="Launchable" c:type="AsLaunchable*"/>
+        </return-value>
+      </constructor>
+      <function name="kind_from_string"
+                c:identifier="as_launchable_kind_from_string"
+                version="0.6.13">
+        <doc xml:space="preserve">Converts the text representation to an enumerated value.</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:space="preserve">a #AsLaunchableKind, or %AS_LAUNCHABLE_KIND_UNKNOWN for unknown.</doc>
+          <type name="LaunchableKind" c:type="AsLaunchableKind"/>
+        </return-value>
+        <parameters>
+          <parameter name="kind" transfer-ownership="none">
+            <doc xml:space="preserve">the string.</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </function>
+      <function name="kind_to_string"
+                c:identifier="as_launchable_kind_to_string"
+                version="0.6.13">
+        <doc xml:space="preserve">Converts the enumerated value to an text representation.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">string version of @kind</doc>
+          <type name="utf8" c:type="const gchar*"/>
+        </return-value>
+        <parameters>
+          <parameter name="kind" transfer-ownership="none">
+            <doc xml:space="preserve">the #AsLaunchableKind.</doc>
+            <type name="LaunchableKind" c:type="AsLaunchableKind"/>
+          </parameter>
+        </parameters>
+      </function>
+      <method name="get_kind"
+              c:identifier="as_launchable_get_kind"
+              version="0.6.13">
+        <doc xml:space="preserve">Gets the launchable kind.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">the #AsLaunchableKind</doc>
+          <type name="LaunchableKind" c:type="AsLaunchableKind"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="launchable" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsLaunchable instance.</doc>
+            <type name="Launchable" c:type="AsLaunchable*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_value"
+              c:identifier="as_launchable_get_value"
+              version="0.6.13">
+        <doc xml:space="preserve">Gets the value to use for the launchable.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">usually a desktop ID, e.g. "gimp.desktop"</doc>
+          <type name="utf8" c:type="const gchar*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="launchable" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsLaunchable instance.</doc>
+            <type name="Launchable" c:type="AsLaunchable*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="set_kind"
+              c:identifier="as_launchable_set_kind"
+              version="0.6.13">
+        <doc xml:space="preserve">Sets the launchable kind.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="launchable" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsLaunchable instance.</doc>
+            <type name="Launchable" c:type="AsLaunchable*"/>
+          </instance-parameter>
+          <parameter name="kind" transfer-ownership="none">
+            <doc xml:space="preserve">the #AsLaunchableKind, e.g. %AS_LAUNCHABLE_KIND_DESKTOP_ID.</doc>
+            <type name="LaunchableKind" c:type="AsLaunchableKind"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_value"
+              c:identifier="as_launchable_set_value"
+              version="0.6.13">
+        <doc xml:space="preserve">Sets the fully-qualified mirror URL to use for the launchable.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="launchable" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsLaunchable instance.</doc>
+            <type name="Launchable" c:type="AsLaunchable*"/>
+          </instance-parameter>
+          <parameter name="value" transfer-ownership="none">
+            <doc xml:space="preserve">the URL.</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <field name="parent_instance">
+        <type name="GObject.Object" c:type="GObject"/>
+      </field>
+    </class>
+    <record name="LaunchableClass"
+            c:type="AsLaunchableClass"
+            glib:is-gtype-struct-for="Launchable">
+      <field name="parent_class">
+        <type name="GObject.ObjectClass" c:type="GObjectClass"/>
+      </field>
+      <field name="_as_reserved1" introspectable="0">
+        <callback name="_as_reserved1">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="_as_reserved2" introspectable="0">
+        <callback name="_as_reserved2">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="_as_reserved3" introspectable="0">
+        <callback name="_as_reserved3">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="_as_reserved4" introspectable="0">
+        <callback name="_as_reserved4">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="_as_reserved5" introspectable="0">
+        <callback name="_as_reserved5">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="_as_reserved6" introspectable="0">
+        <callback name="_as_reserved6">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="_as_reserved7" introspectable="0">
+        <callback name="_as_reserved7">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="_as_reserved8" introspectable="0">
+        <callback name="_as_reserved8">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+    </record>
+    <enumeration name="LaunchableKind" c:type="AsLaunchableKind">
+      <doc xml:space="preserve">The launchable type.</doc>
+      <member name="unknown"
               value="0"
-              c:identifier="AS_MARKUP_CONVERT_FORMAT_SIMPLE">
-        <doc xml:space="preserve">UTF-8 text</doc>
+              c:identifier="AS_LAUNCHABLE_KIND_UNKNOWN">
+        <doc xml:space="preserve">Type invalid or not known</doc>
       </member>
-      <member name="markdown"
+      <member name="desktop_id"
               value="1"
-              c:identifier="AS_MARKUP_CONVERT_FORMAT_MARKDOWN">
-        <doc xml:space="preserve">Markdown format</doc>
-      </member>
-      <member name="null"
-              value="2"
-              c:identifier="AS_MARKUP_CONVERT_FORMAT_NULL">
-        <doc xml:space="preserve">No output</doc>
-      </member>
-      <member name="appstream"
-              value="3"
-              c:identifier="AS_MARKUP_CONVERT_FORMAT_APPSTREAM">
-        <doc xml:space="preserve">AppStream (passthrough)</doc>
-      </member>
-      <member name="html"
-              value="4"
-              c:identifier="AS_MARKUP_CONVERT_FORMAT_HTML">
-        <doc xml:space="preserve">HyperText Markup Language</doc>
+              c:identifier="AS_LAUNCHABLE_KIND_DESKTOP_ID">
+        <doc xml:space="preserve">A desktop ID</doc>
       </member>
     </enumeration>
     <enumeration name="NodeError"
@@ -4986,7 +5728,7 @@ using as_image_get_basename(). This can be overridden if required.</doc>
         <doc xml:space="preserve">No support for parsing</doc>
       </member>
     </enumeration>
-    <enumeration name="NodeFromXmlFlags" c:type="AsNodeFromXmlFlags">
+    <bitfield name="NodeFromXmlFlags" c:type="AsNodeFromXmlFlags">
       <doc xml:space="preserve">The flags for converting from XML.</doc>
       <member name="none" value="0" c:identifier="AS_NODE_FROM_XML_FLAG_NONE">
         <doc xml:space="preserve">No extra flags to use</doc>
@@ -5001,7 +5743,12 @@ using as_image_get_basename(). This can be overridden if required.</doc>
               c:identifier="AS_NODE_FROM_XML_FLAG_KEEP_COMMENTS">
         <doc xml:space="preserve">Retain comments in the XML file</doc>
       </member>
-    </enumeration>
+      <member name="only_native_langs"
+              value="4"
+              c:identifier="AS_NODE_FROM_XML_FLAG_ONLY_NATIVE_LANGS">
+        <doc xml:space="preserve">Only load native languages</doc>
+      </member>
+    </bitfield>
     <enumeration name="NodeInsertFlags" c:type="AsNodeInsertFlags">
       <doc xml:space="preserve">The flags to use when inserting a node.</doc>
       <member name="none" value="0" c:identifier="AS_NODE_INSERT_FLAG_NONE">
@@ -5562,6 +6309,9 @@ using as_image_get_basename(). This can be overridden if required.</doc>
               c:identifier="AS_PROVIDE_KIND_FIRMWARE_FLASHED">
         <doc xml:space="preserve">A flashed firmware GUID</doc>
       </member>
+      <member name="id" value="11" c:identifier="AS_PROVIDE_KIND_ID">
+        <doc xml:space="preserve">An AppStream component ID</doc>
+      </member>
     </enumeration>
     <class name="Release"
            c:symbol-prefix="release"
@@ -5577,6 +6327,36 @@ using as_image_get_basename(). This can be overridden if required.</doc>
           <type name="Release" c:type="AsRelease*"/>
         </return-value>
       </constructor>
+      <function name="state_from_string"
+                c:identifier="as_release_state_from_string"
+                version="0.6.6">
+        <doc xml:space="preserve">Converts the text representation to an enumerated value.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">A #AsReleaseState, e.g. %AS_RELEASE_STATE_INSTALLED.</doc>
+          <type name="ReleaseState" c:type="AsReleaseState"/>
+        </return-value>
+        <parameters>
+          <parameter name="state" transfer-ownership="none">
+            <doc xml:space="preserve">a string</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </function>
+      <function name="state_to_string"
+                c:identifier="as_release_state_to_string"
+                version="0.6.6">
+        <doc xml:space="preserve">Converts the enumerated value to an text representation.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">string version of @state, or %NULL for unknown</doc>
+          <type name="utf8" c:type="const gchar*"/>
+        </return-value>
+        <parameters>
+          <parameter name="state" transfer-ownership="none">
+            <doc xml:space="preserve">the #AsReleaseState, e.g. %AS_RELEASE_STATE_INSTALLED</doc>
+            <type name="ReleaseState" c:type="AsReleaseState"/>
+          </parameter>
+        </parameters>
+      </function>
       <method name="add_checksum"
               c:identifier="as_release_add_checksum"
               version="0.4.2">
@@ -6055,6 +6835,346 @@ NOTE: This is not stored in the XML file, and is only available in-memory.</doc>
               value="2"
               c:identifier="AS_RELEASE_STATE_AVAILABLE">
         <doc xml:space="preserve">Release is available</doc>
+      </member>
+    </enumeration>
+    <class name="Require"
+           c:symbol-prefix="require"
+           c:type="AsRequire"
+           parent="GObject.Object"
+           glib:type-name="AsRequire"
+           glib:get-type="as_require_get_type"
+           glib:type-struct="RequireClass">
+      <constructor name="new" c:identifier="as_require_new" version="0.6.7">
+        <doc xml:space="preserve">Creates a new #AsRequire.</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:space="preserve">a #AsRequire</doc>
+          <type name="Require" c:type="AsRequire*"/>
+        </return-value>
+      </constructor>
+      <function name="compare_from_string"
+                c:identifier="as_require_compare_from_string"
+                version="0.6.7">
+        <doc xml:space="preserve">Converts the text representation to an enumerated value.</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:space="preserve">a #AsRequireCompare, or
+		     %AS_REQUIRE_COMPARE_UNKNOWN for unknown.</doc>
+          <type name="RequireCompare" c:type="AsRequireCompare"/>
+        </return-value>
+        <parameters>
+          <parameter name="compare" transfer-ownership="none">
+            <doc xml:space="preserve">the string.</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </function>
+      <function name="compare_to_string"
+                c:identifier="as_require_compare_to_string"
+                version="0.6.7">
+        <doc xml:space="preserve">Converts the enumerated value to an text representation.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">string version of @compare</doc>
+          <type name="utf8" c:type="const gchar*"/>
+        </return-value>
+        <parameters>
+          <parameter name="compare" transfer-ownership="none">
+            <doc xml:space="preserve">the #AsRequireCompare.</doc>
+            <type name="RequireCompare" c:type="AsRequireCompare"/>
+          </parameter>
+        </parameters>
+      </function>
+      <function name="kind_from_string"
+                c:identifier="as_require_kind_from_string"
+                version="0.6.7">
+        <doc xml:space="preserve">Converts the text representation to an enumerated value.</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:space="preserve">a #AsRequireKind, or %AS_REQUIRE_KIND_UNKNOWN for unknown.</doc>
+          <type name="RequireKind" c:type="AsRequireKind"/>
+        </return-value>
+        <parameters>
+          <parameter name="kind" transfer-ownership="none">
+            <doc xml:space="preserve">the string.</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </function>
+      <function name="kind_to_string"
+                c:identifier="as_require_kind_to_string"
+                version="0.6.7">
+        <doc xml:space="preserve">Converts the enumerated value to an text representation.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">string version of @kind</doc>
+          <type name="utf8" c:type="const gchar*"/>
+        </return-value>
+        <parameters>
+          <parameter name="kind" transfer-ownership="none">
+            <doc xml:space="preserve">the #AsRequireKind.</doc>
+            <type name="RequireKind" c:type="AsRequireKind"/>
+          </parameter>
+        </parameters>
+      </function>
+      <method name="get_compare"
+              c:identifier="as_require_get_compare"
+              version="0.6.7">
+        <doc xml:space="preserve">Gets the require version comparison type.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">the #AsRequireKind</doc>
+          <type name="RequireCompare" c:type="AsRequireCompare"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="require" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsRequire instance.</doc>
+            <type name="Require" c:type="AsRequire*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_kind"
+              c:identifier="as_require_get_kind"
+              version="0.6.7">
+        <doc xml:space="preserve">Gets the require kind.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">the #AsRequireKind</doc>
+          <type name="RequireKind" c:type="AsRequireKind"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="require" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsRequire instance.</doc>
+            <type name="Require" c:type="AsRequire*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_value"
+              c:identifier="as_require_get_value"
+              version="0.6.7">
+        <doc xml:space="preserve">Gets the require value if set.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">the value, e.g. "bootloader"</doc>
+          <type name="utf8" c:type="const gchar*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="require" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsRequire instance.</doc>
+            <type name="Require" c:type="AsRequire*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_version"
+              c:identifier="as_require_get_version"
+              version="0.6.7">
+        <doc xml:space="preserve">Gets the require version if set.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">the version, e.g. "0.1.2"</doc>
+          <type name="utf8" c:type="const gchar*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="require" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsRequire instance.</doc>
+            <type name="Require" c:type="AsRequire*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="set_compare"
+              c:identifier="as_require_set_compare"
+              version="0.6.7">
+        <doc xml:space="preserve">Sets the require version comparison type.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="require" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsRequire instance.</doc>
+            <type name="Require" c:type="AsRequire*"/>
+          </instance-parameter>
+          <parameter name="compare" transfer-ownership="none">
+            <doc xml:space="preserve">the #AsRequireKind, e.g. %AS_REQUIRE_KIND_ID.</doc>
+            <type name="RequireCompare" c:type="AsRequireCompare"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_kind"
+              c:identifier="as_require_set_kind"
+              version="0.6.7">
+        <doc xml:space="preserve">Sets the require kind.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="require" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsRequire instance.</doc>
+            <type name="Require" c:type="AsRequire*"/>
+          </instance-parameter>
+          <parameter name="kind" transfer-ownership="none">
+            <doc xml:space="preserve">the #AsRequireKind, e.g. %AS_REQUIRE_KIND_ID.</doc>
+            <type name="RequireKind" c:type="AsRequireKind"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_value"
+              c:identifier="as_require_set_value"
+              version="0.6.7">
+        <doc xml:space="preserve">Sets the require value.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="require" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsRequire instance.</doc>
+            <type name="Require" c:type="AsRequire*"/>
+          </instance-parameter>
+          <parameter name="value" transfer-ownership="none">
+            <doc xml:space="preserve">an require version, e.g. `firmware`</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_version"
+              c:identifier="as_require_set_version"
+              version="0.6.7">
+        <doc xml:space="preserve">Sets the require version.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="require" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsRequire instance.</doc>
+            <type name="Require" c:type="AsRequire*"/>
+          </instance-parameter>
+          <parameter name="version" transfer-ownership="none">
+            <doc xml:space="preserve">an version number, e.g. `0.1.2`</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="version_compare"
+              c:identifier="as_require_version_compare"
+              version="0.6.7"
+              throws="1">
+        <doc xml:space="preserve">Compares the version number of the requirement with a predicate.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">%TRUE if the predicate was true</doc>
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="require" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsRequire instance.</doc>
+            <type name="Require" c:type="AsRequire*"/>
+          </instance-parameter>
+          <parameter name="version" transfer-ownership="none">
+            <doc xml:space="preserve">a version number, e.g. `0.1.3`</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <field name="parent_instance">
+        <type name="GObject.Object" c:type="GObject"/>
+      </field>
+    </class>
+    <record name="RequireClass"
+            c:type="AsRequireClass"
+            glib:is-gtype-struct-for="Require">
+      <field name="parent_class">
+        <type name="GObject.ObjectClass" c:type="GObjectClass"/>
+      </field>
+      <field name="_as_reserved1" introspectable="0">
+        <callback name="_as_reserved1">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="_as_reserved2" introspectable="0">
+        <callback name="_as_reserved2">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="_as_reserved3" introspectable="0">
+        <callback name="_as_reserved3">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="_as_reserved4" introspectable="0">
+        <callback name="_as_reserved4">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="_as_reserved5" introspectable="0">
+        <callback name="_as_reserved5">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="_as_reserved6" introspectable="0">
+        <callback name="_as_reserved6">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="_as_reserved7" introspectable="0">
+        <callback name="_as_reserved7">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="_as_reserved8" introspectable="0">
+        <callback name="_as_reserved8">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+    </record>
+    <enumeration name="RequireCompare" c:type="AsRequireCompare">
+      <doc xml:space="preserve">The relational comparison type.</doc>
+      <member name="unknown"
+              value="0"
+              c:identifier="AS_REQUIRE_COMPARE_UNKNOWN">
+        <doc xml:space="preserve">Comparison predicate invalid or not known</doc>
+      </member>
+      <member name="eq" value="1" c:identifier="AS_REQUIRE_COMPARE_EQ">
+        <doc xml:space="preserve">Equal to</doc>
+      </member>
+      <member name="ne" value="2" c:identifier="AS_REQUIRE_COMPARE_NE">
+        <doc xml:space="preserve">Not equal to</doc>
+      </member>
+      <member name="lt" value="3" c:identifier="AS_REQUIRE_COMPARE_LT">
+        <doc xml:space="preserve">Less than</doc>
+      </member>
+      <member name="gt" value="4" c:identifier="AS_REQUIRE_COMPARE_GT">
+        <doc xml:space="preserve">Greater than</doc>
+      </member>
+      <member name="le" value="5" c:identifier="AS_REQUIRE_COMPARE_LE">
+        <doc xml:space="preserve">Less than or equal to</doc>
+      </member>
+      <member name="ge" value="6" c:identifier="AS_REQUIRE_COMPARE_GE">
+        <doc xml:space="preserve">Greater than or equal to</doc>
+      </member>
+      <member name="glob" value="7" c:identifier="AS_REQUIRE_COMPARE_GLOB">
+        <doc xml:space="preserve">Filename glob, e.g. `test*`</doc>
+      </member>
+      <member name="regex" value="8" c:identifier="AS_REQUIRE_COMPARE_REGEX">
+        <doc xml:space="preserve">A regular expression, e.g. `fw[0-255]`</doc>
+      </member>
+    </enumeration>
+    <enumeration name="RequireKind" c:type="AsRequireKind">
+      <doc xml:space="preserve">The require type.</doc>
+      <member name="unknown" value="0" c:identifier="AS_REQUIRE_KIND_UNKNOWN">
+        <doc xml:space="preserve">Type invalid or not known</doc>
+      </member>
+      <member name="id" value="1" c:identifier="AS_REQUIRE_KIND_ID">
+        <doc xml:space="preserve">Component ID</doc>
+      </member>
+      <member name="firmware"
+              value="2"
+              c:identifier="AS_REQUIRE_KIND_FIRMWARE">
+        <doc xml:space="preserve">Device firmware version</doc>
       </member>
     </enumeration>
     <class name="Review"
@@ -7536,6 +8656,27 @@ ignoring the prefix type.</doc>
           </parameter>
         </parameters>
       </method>
+      <method name="get_apps_by_id_merge"
+              c:identifier="as_store_get_apps_by_id_merge"
+              version="0.7.0">
+        <doc xml:space="preserve">Gets an array of all the merge applications that match a specific ID.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">an array</doc>
+          <array name="GLib.PtrArray" c:type="GPtrArray*">
+            <type name="App"/>
+          </array>
+        </return-value>
+        <parameters>
+          <instance-parameter name="store" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsStore instance.</doc>
+            <type name="Store" c:type="AsStore*"/>
+          </instance-parameter>
+          <parameter name="id" transfer-ownership="none">
+            <doc xml:space="preserve">the application full ID.</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
       <method name="get_apps_by_metadata"
               c:identifier="as_store_get_apps_by_metadata"
               version="0.1.4">
@@ -7599,6 +8740,22 @@ metadata is compatible with this builder.</doc>
         <return-value transfer-ownership="none">
           <doc xml:space="preserve">the origin string, or %NULL if unset</doc>
           <type name="utf8" c:type="const gchar*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="store" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsStore instance.</doc>
+            <type name="Store" c:type="AsStore*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_search_match"
+              c:identifier="as_store_get_search_match"
+              version="0.6.13">
+        <doc xml:space="preserve">Gets the token match fields. The bitfield given here is used to choose what
+is included in the token cache.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">a #AsAppSearchMatch, e.g. %AS_APP_SEARCH_MATCH_PKGNAME</doc>
+          <type name="AppSearchMatch" c:type="AsAppSearchMatch"/>
         </return-value>
         <parameters>
           <instance-parameter name="store" transfer-ownership="none">
@@ -7889,6 +9046,25 @@ metadata can be used.</doc>
           </parameter>
         </parameters>
       </method>
+      <method name="set_search_match"
+              c:identifier="as_store_set_search_match"
+              version="0.6.5">
+        <doc xml:space="preserve">Sets the token match fields. The bitfield given here is used to choose what
+is included in the token cache.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="store" transfer-ownership="none">
+            <doc xml:space="preserve">a #AsStore instance.</doc>
+            <type name="Store" c:type="AsStore*"/>
+          </instance-parameter>
+          <parameter name="search_match" transfer-ownership="none">
+            <doc xml:space="preserve">the #AsAppSearchMatch, e.g. %AS_APP_SEARCH_MATCH_PKGNAME</doc>
+            <type name="AppSearchMatch" c:type="AsAppSearchMatch"/>
+          </parameter>
+        </parameters>
+      </method>
       <method name="set_watch_flags"
               c:identifier="as_store_set_watch_flags"
               version="0.4.2">
@@ -8047,6 +9223,11 @@ or removed from the store.</doc>
               value="4"
               c:identifier="AS_STORE_ADD_FLAG_USE_MERGE_HEURISTIC">
         <doc xml:space="preserve">Use a heuristic when adding merge components</doc>
+      </member>
+      <member name="only_native_langs"
+              value="8"
+              c:identifier="AS_STORE_ADD_FLAG_ONLY_NATIVE_LANGS">
+        <doc xml:space="preserve">Only load native languages</doc>
       </member>
     </bitfield>
     <record name="StoreClass"
@@ -8619,6 +9800,15 @@ or removed from the store.</doc>
       <member name="suggests" value="56" c:identifier="AS_TAG_SUGGESTS">
         <doc xml:space="preserve">`suggests`</doc>
       </member>
+      <member name="requires" value="57" c:identifier="AS_TAG_REQUIRES">
+        <doc xml:space="preserve">`requires`</doc>
+      </member>
+      <member name="custom" value="58" c:identifier="AS_TAG_CUSTOM">
+        <doc xml:space="preserve">`custom`</doc>
+      </member>
+      <member name="launchable" value="59" c:identifier="AS_TAG_LAUNCHABLE">
+        <doc xml:space="preserve">`launchable`</doc>
+      </member>
     </enumeration>
     <enumeration name="TagFlags" c:type="AsTagFlags">
       <doc xml:space="preserve">The flags to use when matching %AsTag's.</doc>
@@ -9062,124 +10252,6 @@ Any backslashes or spaces in the key name are also converted to '_'.</doc>
         <parameter name="kudo_kind" transfer-ownership="none">
           <doc xml:space="preserve">the @AsKudoKind.</doc>
           <type name="KudoKind" c:type="AsKudoKind"/>
-        </parameter>
-      </parameters>
-    </function>
-    <function name="markup_convert"
-              c:identifier="as_markup_convert"
-              version="0.3.5"
-              throws="1">
-      <doc xml:space="preserve">Converts an XML description into a printable form.</doc>
-      <return-value transfer-ownership="full">
-        <doc xml:space="preserve">a newly allocated %NULL terminated string</doc>
-        <type name="utf8" c:type="gchar*"/>
-      </return-value>
-      <parameters>
-        <parameter name="markup" transfer-ownership="none">
-          <doc xml:space="preserve">the text to copy.</doc>
-          <type name="utf8" c:type="const gchar*"/>
-        </parameter>
-        <parameter name="format" transfer-ownership="none">
-          <doc xml:space="preserve">the #AsMarkupConvertFormat, e.g. %AS_MARKUP_CONVERT_FORMAT_MARKDOWN</doc>
-          <type name="MarkupConvertFormat" c:type="AsMarkupConvertFormat"/>
-        </parameter>
-      </parameters>
-    </function>
-    <function name="markup_convert_full"
-              c:identifier="as_markup_convert_full"
-              version="0.3.5"
-              throws="1">
-      <doc xml:space="preserve">Converts an XML description into a printable form.</doc>
-      <return-value transfer-ownership="full">
-        <doc xml:space="preserve">a newly allocated %NULL terminated string</doc>
-        <type name="utf8" c:type="gchar*"/>
-      </return-value>
-      <parameters>
-        <parameter name="markup" transfer-ownership="none">
-          <doc xml:space="preserve">the text to copy.</doc>
-          <type name="utf8" c:type="const gchar*"/>
-        </parameter>
-        <parameter name="format" transfer-ownership="none">
-          <doc xml:space="preserve">the #AsMarkupConvertFormat, e.g. %AS_MARKUP_CONVERT_FORMAT_MARKDOWN</doc>
-          <type name="MarkupConvertFormat" c:type="AsMarkupConvertFormat"/>
-        </parameter>
-        <parameter name="flags" transfer-ownership="none">
-          <doc xml:space="preserve">the #AsMarkupConvertFlag, e.g. %AS_MARKUP_CONVERT_FLAG_IGNORE_ERRORS</doc>
-          <type name="MarkupConvertFlag" c:type="AsMarkupConvertFlag"/>
-        </parameter>
-      </parameters>
-    </function>
-    <function name="markup_convert_simple"
-              c:identifier="as_markup_convert_simple"
-              version="0.1.0"
-              throws="1">
-      <doc xml:space="preserve">Converts an XML description into a printable form.</doc>
-      <return-value transfer-ownership="full">
-        <doc xml:space="preserve">a newly allocated %NULL terminated string</doc>
-        <type name="utf8" c:type="gchar*"/>
-      </return-value>
-      <parameters>
-        <parameter name="markup" transfer-ownership="none">
-          <doc xml:space="preserve">the text to copy.</doc>
-          <type name="utf8" c:type="const gchar*"/>
-        </parameter>
-      </parameters>
-    </function>
-    <function name="markup_import"
-              c:identifier="as_markup_import"
-              version="0.5.11"
-              throws="1">
-      <doc xml:space="preserve">Imports text and converts to AppStream markup.</doc>
-      <return-value transfer-ownership="full">
-        <doc xml:space="preserve">appstream markup, or %NULL in event of an error</doc>
-        <type name="utf8" c:type="gchar*"/>
-      </return-value>
-      <parameters>
-        <parameter name="text" transfer-ownership="none">
-          <doc xml:space="preserve">the text to import.</doc>
-          <type name="utf8" c:type="const gchar*"/>
-        </parameter>
-        <parameter name="format" transfer-ownership="none">
-          <doc xml:space="preserve">the #AsMarkupConvertFormat, e.g. %AS_MARKUP_CONVERT_FORMAT_SIMPLE</doc>
-          <type name="MarkupConvertFormat" c:type="AsMarkupConvertFormat"/>
-        </parameter>
-      </parameters>
-    </function>
-    <function name="markup_strsplit_words"
-              c:identifier="as_markup_strsplit_words"
-              version="0.3.5">
-      <doc xml:space="preserve">Splits up a long line into an array of smaller strings, each being no longer
-than @line_len. Words are not split.</doc>
-      <return-value transfer-ownership="full">
-        <doc xml:space="preserve">lines, or %NULL in event of an error</doc>
-        <array c:type="gchar**">
-          <type name="utf8"/>
-        </array>
-      </return-value>
-      <parameters>
-        <parameter name="text" transfer-ownership="none">
-          <doc xml:space="preserve">the text to split.</doc>
-          <type name="utf8" c:type="const gchar*"/>
-        </parameter>
-        <parameter name="line_len" transfer-ownership="none">
-          <doc xml:space="preserve">the maximum length of the output line</doc>
-          <type name="guint" c:type="guint"/>
-        </parameter>
-      </parameters>
-    </function>
-    <function name="markup_validate"
-              c:identifier="as_markup_validate"
-              version="0.5.1"
-              throws="1">
-      <doc xml:space="preserve">Validates some markup.</doc>
-      <return-value transfer-ownership="none">
-        <doc xml:space="preserve">%TRUE if the appstream description was valid</doc>
-        <type name="gboolean" c:type="gboolean"/>
-      </return-value>
-      <parameters>
-        <parameter name="markup" transfer-ownership="none">
-          <doc xml:space="preserve">the text to validate</doc>
-          <type name="utf8" c:type="const gchar*"/>
         </parameter>
       </parameters>
     </function>
@@ -10022,6 +11094,34 @@ contains alpha-numeric chars, dots and dashes.</doc>
         </parameter>
       </parameters>
     </function>
+    <function name="utils_guid_from_data"
+              c:identifier="as_utils_guid_from_data"
+              version="0.6.13"
+              throws="1">
+      <doc xml:space="preserve">Returns a GUID for some data. This uses a hash and so even small
+differences in the @data will produce radically different return values.
+
+The implementation is taken from RFC4122, Section 4.1.3; specifically
+using a type-5 SHA-1 hash.</doc>
+      <return-value transfer-ownership="full">
+        <doc xml:space="preserve">A new GUID, or %NULL if the namespace_id was invalid</doc>
+        <type name="utf8" c:type="gchar*"/>
+      </return-value>
+      <parameters>
+        <parameter name="namespace_id" transfer-ownership="none">
+          <doc xml:space="preserve">A namespace ID, e.g. "6ba7b810-9dad-11d1-80b4-00c04fd430c8"</doc>
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+        <parameter name="data" transfer-ownership="none">
+          <doc xml:space="preserve">data to hash</doc>
+          <type name="guint8" c:type="const guint8*"/>
+        </parameter>
+        <parameter name="data_len" transfer-ownership="none">
+          <doc xml:space="preserve">length of @data</doc>
+          <type name="gsize" c:type="gsize"/>
+        </parameter>
+      </parameters>
+    </function>
     <function name="utils_guid_from_string"
               c:identifier="as_utils_guid_from_string"
               version="0.5.0">
@@ -10140,7 +11240,7 @@ The same result can be obtained with this simple python program:
       <doc xml:space="preserve">Checks the licence string to check it being a valid licence.
 NOTE: SPDX licences can't typically contain brackets.</doc>
       <return-value transfer-ownership="none">
-        <doc xml:space="preserve">%TRUE if the icon is a valid "SPDX license"</doc>
+        <doc xml:space="preserve">%TRUE if the license is a valid "SPDX license"</doc>
         <type name="gboolean" c:type="gboolean"/>
       </return-value>
       <parameters>
@@ -10155,7 +11255,7 @@ NOTE: SPDX licences can't typically contain brackets.</doc>
               version="0.1.5">
       <doc xml:space="preserve">Searches the known list of SPDX license IDs.</doc>
       <return-value transfer-ownership="none">
-        <doc xml:space="preserve">%TRUE if the icon is a valid "SPDX license ID"</doc>
+        <doc xml:space="preserve">%TRUE if the license ID is a valid "SPDX license ID"</doc>
         <type name="gboolean" c:type="gboolean"/>
       </return-value>
       <parameters>

@@ -10,9 +10,9 @@ and/or use gtk-doc annotations.  -->
   <include name="Gio" version="2.0"/>
   <namespace name="TotemPlParser"
              version="1.0"
-             shared-library="libtotem-plparser.so.18"
-             c:identifier-prefixes="TotemPl,TotemDisc,TotemCd"
-             c:symbol-prefixes="totem_pl,totem_disc,totem_cd">
+             shared-library="libtotem-plparser.so.19.0.1"
+             c:identifier-prefixes="TotemDisc,TotemCd,TotemPl"
+             c:symbol-prefixes="totem_disc,totem_cd,totem_pl">
     <alias name="ParserMetadata"
            c:type="TotemPlParserMetadata"
            introspectable="0">
@@ -224,12 +224,12 @@ used when saving the state of an on-going playlist.</doc>
       <type name="gint" c:type="gint"/>
     </constant>
     <constant name="PARSER_VERSION_MICRO"
-              value="7"
+              value="3"
               c:type="TOTEM_PL_PARSER_VERSION_MICRO">
       <type name="gint" c:type="gint"/>
     </constant>
     <constant name="PARSER_VERSION_MINOR"
-              value="10"
+              value="25"
               c:type="TOTEM_PL_PARSER_VERSION_MINOR">
       <type name="gint" c:type="gint"/>
     </constant>
